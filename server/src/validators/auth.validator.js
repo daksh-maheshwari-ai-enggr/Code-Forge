@@ -1,4 +1,4 @@
-const allowedRegistrationRoles = ["USER", "AUTHOR"];
+const allowedRegistrationRoles = ["READER", "AUTHOR"];
 
 const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -38,7 +38,7 @@ const validateRegister = (data) => {
   if (!allowedRegistrationRoles.includes(role)) {
     return {
       valid: false,
-      message: "Role must be USER or AUTHOR",
+      message: "Role must be READER or AUTHOR",
     };
   }
 
