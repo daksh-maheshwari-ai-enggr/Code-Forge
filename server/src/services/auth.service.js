@@ -28,7 +28,7 @@ const getSafeUser = (user) => {
   };
 };
 
-const registerUser = async ({ name, email, password, role }) => {
+const registerUser = async ({ name, email, password, bio }) => {
   const normalizedEmail = email.trim().toLowerCase();
 
   const existingUser = await User.findOne({
@@ -47,7 +47,7 @@ const registerUser = async ({ name, email, password, role }) => {
     name: name.trim(),
     email: normalizedEmail,
     password: hashedPassword,
-    role:author, // Default role is set to "AUTHOR"
+    role: "AUTHOR" , // Default role is set to "AUTHOR"
     bio: bio ? bio.trim() : undefined,
   });
 

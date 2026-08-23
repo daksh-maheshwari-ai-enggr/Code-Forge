@@ -1,4 +1,3 @@
-const allowedRegistrationRoles = ["READER", "AUTHOR"];
 
 const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -35,13 +34,7 @@ const validateRegister = (data) => {
     };
   }
 
-  if (!allowedRegistrationRoles.includes(role)) {
-    return {
-      valid: false,
-      message: "Role must be READER or AUTHOR",
-    };
-  }
-
+ 
   if (bio !== undefined && typeof bio !== "string") {
     return {
       valid: false,
@@ -86,5 +79,5 @@ const validateLogin = (data) => {
 module.exports = {
   validateRegister,
   validateLogin,
-  allowedRegistrationRoles,
+
 };
