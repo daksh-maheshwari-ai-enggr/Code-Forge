@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { registerUser } from "../services/api";
+import { registerUser } from "../../services/api";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
-function Register({ onRegister, onSwitchToLogin }) {
+function Register() {
+  const { register } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -79,6 +83,14 @@ function Register({ onRegister, onSwitchToLogin }) {
       localStorage.setItem("authToken", token);
       localStorage.setItem("authUser", JSON.stringify(user));
 
+      login(user);
+
+      if (user.role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/author/dashboard");
+      }
+
       setSuccess("Account created successfully.");
 
       if (onRegister) {
@@ -115,10 +127,7 @@ function Register({ onRegister, onSwitchToLogin }) {
           </p>
         </div>
 
-        <form
-          className="flex flex-col gap-5"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
           {error && (
             <div
               className="px-3.5 py-3 rounded-[9px] border border-[#e3b5aa] bg-[#f9e9e5] text-[#8c392d] text-[13px] leading-[1.5]"
@@ -192,9 +201,7 @@ function Register({ onRegister, onSwitchToLogin }) {
                 <button
                   type="button"
                   className="border-0 bg-transparent p-0 text-[#214d37] text-[12px] font-bold cursor-pointer hover:text-[#163b29]"
-                  onClick={() =>
-                    setShowPassword((previous) => !previous)
-                  }
+                  onClick={() => setShowPassword((previous) => !previous)}
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
@@ -288,7 +295,7 @@ function Register({ onRegister, onSwitchToLogin }) {
             <button
               type="button"
               className="border-0 bg-transparent p-0 text-[#214d37] text-[13px] font-extrabold cursor-pointer hover:text-[#163b29]"
-              onClick={onSwitchToLogin}
+              onClick={() => navigate("/login")}
             >
               Sign in
             </button>

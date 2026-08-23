@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { loginUser } from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
-function Login({ onLogin, onSwitchToRegister }) {
+function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -46,8 +50,12 @@ function Login({ onLogin, onSwitchToRegister }) {
       localStorage.setItem("authToken", token);
       localStorage.setItem("authUser", JSON.stringify(user));
 
-      if (onLogin) {
-        onLogin(user);
+      login(user);
+
+      if (user.role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/author/dashboard");
       }
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
@@ -80,10 +88,7 @@ function Login({ onLogin, onSwitchToRegister }) {
           </p>
         </div>
 
-        <form
-          className="flex flex-col gap-5"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
           {error && (
             <div
               className="px-3.5 py-3 rounded-[9px] border border-[#e3b5aa] bg-[#f9e9e5] text-[#8c392d] text-[13px] leading-[1.5]"
@@ -160,7 +165,7 @@ function Login({ onLogin, onSwitchToRegister }) {
             <button
               type="button"
               className="border-0 bg-transparent p-0 text-[#214d37] text-[13px] font-extrabold cursor-pointer hover:text-[#163b29]"
-              onClick={onSwitchToRegister}
+              onClick={() => navigate("/register")}
             >
               Create one
             </button>
