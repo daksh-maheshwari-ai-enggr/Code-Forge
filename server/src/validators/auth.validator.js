@@ -5,12 +5,12 @@ const isValidEmail = (email) => {
 };
 
 const validateRegister = (data) => {
-  const { name, email, password, role, bio } = data;
+  const { name, email, password, bio } = data;
 
-  if (!name || !email || !password || !role) {
+  if (!name || !email || !password ) {
     return {
       valid: false,
-      message: "Name, email, password, and role are required",
+      message: "Name, email, and password are required",
     };
   }
 
