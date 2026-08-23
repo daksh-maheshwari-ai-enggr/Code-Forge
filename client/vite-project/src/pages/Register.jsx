@@ -7,7 +7,6 @@ function Register({ onRegister, onSwitchToLogin }) {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "READER",
     bio: "",
   });
 
@@ -32,15 +31,6 @@ function Register({ onRegister, onSwitchToLogin }) {
     if (success) {
       setSuccess("");
     }
-  };
-
-  const handleRoleChange = (role) => {
-    setFormData((previous) => ({
-      ...previous,
-      role,
-    }));
-
-    setError("");
   };
 
   const handleSubmit = async (event) => {
@@ -76,7 +66,6 @@ function Register({ onRegister, onSwitchToLogin }) {
         name: formData.name.trim(),
         email: formData.email.trim(),
         password: formData.password,
-        role: formData.role,
       };
 
       if (formData.bio.trim()) {
@@ -214,38 +203,6 @@ function Register({ onRegister, onSwitchToLogin }) {
                 autoComplete="new-password"
                 required
               />
-            </div>
-          </div>
-
-          <div className="form-field">
-            <label>Register as</label>
-
-            <div className="role-selector">
-              <button
-                type="button"
-                className={`role-option ${
-                  formData.role === "READER" ? "active" : ""
-                }`}
-                onClick={() => handleRoleChange("READER")}
-              >
-                <span className="role-title">Reader</span>
-                <span className="role-description">
-                  Browse and read published content
-                </span>
-              </button>
-
-              <button
-                type="button"
-                className={`role-option ${
-                  formData.role === "AUTHOR" ? "active" : ""
-                }`}
-                onClick={() => handleRoleChange("AUTHOR")}
-              >
-                <span className="role-title">Author</span>
-                <span className="role-description">
-                  Write and publish content
-                </span>
-              </button>
             </div>
           </div>
 
