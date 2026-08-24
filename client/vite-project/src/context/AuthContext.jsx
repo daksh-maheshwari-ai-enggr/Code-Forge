@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
     setUser(loggedInUser);
   };
 
-  const register = (registeredUser) => {
+  const registeruser = (registeredUser) => {
     setUser(registeredUser);
   };
 
@@ -55,7 +55,7 @@ export function AuthProvider({ children }) {
         loading,
         isAuthenticated: !!user,
         login,
-        register,
+        registeruser,
         logout,
       }}
     >

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FiSearch, FiBookOpen } from "react-icons/fi";
-import { mockArticles, CATEGORIES } from "../data/mockArticles";
-import ArticleCard from "../components/ArticleCard";
+import { mockArticles, CATEGORIES } from "../../data/mockArticles";
+import ArticleCard from "../../components/ArticleCard";
+import Navbar from "../../components/Navbar";
 
 export default function BrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,6 +34,8 @@ export default function BrowsePage() {
   });
 
   return (
+    <>
+    <Navbar />
     <div className="w-full text-stone-800 pb-16">
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         {/* Header */}
@@ -98,5 +101,6 @@ export default function BrowsePage() {
         )}
       </main>
     </div>
+    </>
   );
 }

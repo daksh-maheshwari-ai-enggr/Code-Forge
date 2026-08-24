@@ -1,5 +1,5 @@
-
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import {
   FiBookOpen,
   FiGrid,
@@ -10,16 +10,32 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 
+
 export default function Navbar() {
+
+const {user} = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
 
   const navItems = [
     { name: "Home", path: "/", icon: FiGrid },
     { name: "Browse", path: "/browse", icon: FiCompass },
-    { name: "Write", path: "/write", icon: FiEdit3 },
-    { name: "Profile", path: "/profile", icon: FiUser },
   ];
+
+  if (user?.role === "AUTHOR") {
+    navItems.push(
+      { name: "Write", path: "/write", icon: FiEdit3 },
+      { name: "Profile", path: "/profile", icon: FiUser },
+    );
+  }
+
+  if (user?.role === "ADMIN") {
+    navItems.push({
+      name: "Admin",
+      path: "/admin/dashboard",
+      icon: FiGrid,
+    });
+  }
 
   return (
     <header className="w-full bg-[#FBF9F5] border-b border-stone-200/80 px-6 py-3.5 sticky top-0 z-50">

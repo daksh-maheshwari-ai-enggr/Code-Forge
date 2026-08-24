@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 function Register() {
-  const { register } = useAuth();
+  const { registeruser } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -83,7 +83,7 @@ function Register() {
       localStorage.setItem("authToken", token);
       localStorage.setItem("authUser", JSON.stringify(user));
 
-      login(user);
+      registeruser(user);
 
       if (user.role === "ADMIN") {
         navigate("/admin/dashboard");

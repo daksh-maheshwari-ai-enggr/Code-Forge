@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { mockArticles, CATEGORIES } from "../data/mockArticles";
-import FeaturedHeroCard from "../components/FeaturedHeroCard";
-import ArticleCard from "../components/ArticleCard";
+import { mockArticles, CATEGORIES } from "../../data/mockArticles";
+import FeaturedHeroCard from "../../components/FeaturedHeroCard";
+import ArticleCard from "../../components/ArticleCard";
+import Navbar from "../../components/Navbar";
 
 export default function HomePage() {
   // Grab the first featured article, and use the rest for the recent grid
@@ -9,6 +10,8 @@ export default function HomePage() {
   const recentArticles = mockArticles.filter((a) => a.id !== featuredArticle?.id);
 
   return (
+    <>
+    <Navbar/>
     <div className="w-full text-stone-800 pb-16">
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-12">
         {/* Featured Hero Section */}
@@ -51,5 +54,6 @@ export default function HomePage() {
         </section>
       </main>
     </div>
+    </>
   );
 }
