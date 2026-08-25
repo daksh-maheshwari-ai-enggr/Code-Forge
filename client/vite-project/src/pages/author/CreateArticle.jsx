@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { FiArrowLeft, FiPlus, FiTrash2 } from "react-icons/fi";
+import Navbar from "../../components/Navbar";
+  
 
 export default function CreateArticle() {
 
@@ -63,6 +65,8 @@ export default function CreateArticle() {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="bg-[#F5F2EA] min-h-screen px-6 py-8">
       <div className="max-w-4xl mx-auto">
 
@@ -266,5 +270,6 @@ export default function CreateArticle() {
 
       </div>
     </div>
+    </>
   );
 }
