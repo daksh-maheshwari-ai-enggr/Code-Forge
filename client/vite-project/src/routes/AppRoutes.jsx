@@ -19,7 +19,6 @@ function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* Public */}
         <Route path="/" element={<HomePage />} />
         <Route path="/browse" element={<BrowsePage />} />
@@ -51,8 +50,14 @@ function AppRoutes() {
           }
         />
 
-        <Route path="/author/write" element={<CreateArticle />} />
-
+        <Route
+          path="/author/write"
+          element={
+            <RoleRoute allowedRoles={["AUTHOR"]}>
+              <CreateArticle />
+            </RoleRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
