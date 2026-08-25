@@ -10,10 +10,8 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 
-
 export default function Navbar() {
-
-const {user} = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -24,8 +22,8 @@ const {user} = useAuth();
 
   if (user?.role === "AUTHOR") {
     navItems.push(
-      { name: "Write", path: "/write", icon: FiEdit3 },
-      { name: "Profile", path: "/profile", icon: FiUser },
+      { name: "Write", path: "/author/write", icon: FiEdit3 }, // ✅ FIXED PATH
+      { name: "Profile", path: "/profile", icon: FiUser }
     );
   }
 
@@ -40,6 +38,7 @@ const {user} = useAuth();
   return (
     <header className="w-full bg-[#FBF9F5] border-b border-stone-200/80 px-6 py-3.5 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
+
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#1B3B2B] flex items-center justify-center text-white">
@@ -50,11 +49,14 @@ const {user} = useAuth();
           </span>
         </Link>
 
-        {/* Navigation Switcher */}
+        {/* Navigation */}
         <nav className="hidden md:flex items-center gap-1 bg-[#ECE7DC]/70 p-1 rounded-full border border-stone-200/60">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = currentPath === item.path;
+
+            // ✅ BETTER ACTIVE CHECK (handles nested routes)
+            const isActive = currentPath.startsWith(item.path);
+
             return (
               <Link
                 key={item.name}
@@ -72,13 +74,17 @@ const {user} = useAuth();
           })}
         </nav>
 
-        {/* User Profile & Actions */}
+        {/* User Profile */}
         <div className="flex items-center gap-3">
+
           <button
             type="button"
             className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-stone-200 text-xs font-medium text-stone-700 hover:bg-stone-50 shadow-sm"
           >
-            <span>Priya Mehta (author)</span>
+            {/* ✅ Dynamic user name + role */}
+            <span>
+              {user?.name || "User"} ({user?.role?.toLowerCase()})
+            </span>
             <FiChevronDown className="w-3.5 h-3.5 text-stone-400" />
           </button>
 
@@ -91,10 +97,18 @@ const {user} = useAuth();
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-[#FBF9F5]" />
           </button>
 
+          {/* ✅ Dynamic initials */}
           <div className="w-8 h-8 rounded-full bg-[#1B3B2B] text-[#D8E6DC] flex items-center justify-center text-xs font-semibold">
-            PM
+            {user?.name
+              ? user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()
+              : "U"}
           </div>
         </div>
+
       </div>
     </header>
   );

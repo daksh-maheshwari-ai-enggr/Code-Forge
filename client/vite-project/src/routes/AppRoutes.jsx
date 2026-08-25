@@ -13,6 +13,7 @@ import RoleRoute from "../components/auth/RoleRoute";
 
 import AuthorDashboard from "../pages/author/dashboard";
 import AdminDashboard from "../pages/admin/admin";
+import CreateArticle from "../pages/author/CreateArticle";
 
 function AppRoutes() {
   return (
@@ -49,6 +50,8 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
+        <Route path="/author/write" element={<CreateArticle />} />
 
       </Routes>
     </BrowserRouter>
