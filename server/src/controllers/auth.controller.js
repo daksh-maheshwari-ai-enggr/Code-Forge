@@ -1,8 +1,8 @@
-const {
+import {
   registerUser,
   loginUser,
   getCurrentUser,
-} = require("../services/auth.service");
+} from "../services/auth.service";
 
 const register = async (req, res) => {
   try {
@@ -69,7 +69,7 @@ const getMe = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   register,
   login,
   getMe,

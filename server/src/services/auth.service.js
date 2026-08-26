@@ -100,7 +100,7 @@ const getCurrentUser = async (userId) => {
   return getSafeUser(user);
 };
 
-module.exports = {
+export default {
   registerUser,
   loginUser,
   getCurrentUser,

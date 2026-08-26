@@ -76,7 +76,7 @@ const validateLogin = (data) => {
   };
 };
 
-module.exports = {
+export default {
   validateRegister,
   validateLogin,
 

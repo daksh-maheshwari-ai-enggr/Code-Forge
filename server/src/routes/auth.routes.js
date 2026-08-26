@@ -1,4 +1,4 @@
-const express = require("express");
+import express from "express"
 
 const {
   register,
@@ -49,4 +49,4 @@ router.post("/login", (req, res, next) => {
 
 router.get("/me", authMiddleware, getMe);
 
-module.exports = router;
+export default router;
