@@ -14,6 +14,10 @@ import RoleRoute from "../components/auth/RoleRoute";
 import AuthorDashboard from "../pages/author/dashboard";
 import AdminDashboard from "../pages/admin/admin";
 
+import ArticlePage from "../pages/reader/ArticlePage";
+import QuizPage from "../pages/reader/QuizPage";
+import QuizResultPage from "../pages/reader/QuizResultPage";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -22,6 +26,9 @@ function AppRoutes() {
         {/* Public */}
         <Route path="/" element={<HomePage />} />
         <Route path="/browse" element={<BrowsePage />} />
+        <Route path="/read/:id" element={<ArticlePage />} />
+        <Route path="/read/:id/quiz" element={<QuizPage />} />
+        <Route path="/read/:id/result" element={<QuizResultPage />} />
 
         {/* Authentication */}
         <Route path="/login" element={<Login />} />
