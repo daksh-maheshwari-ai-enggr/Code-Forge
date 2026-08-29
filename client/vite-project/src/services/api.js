@@ -1,4 +1,8 @@
-const API_BASE_URL = "http://localhost:5004/api/v1";
+const API_BASE_URL = "http://localhost:5004/api";
+
+const api = axios.create({
+  baseURL: "http://localhost:5004/api",
+});
 
 const request = async (endpoint, options = {}) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -42,6 +46,7 @@ const getCurrentUser = async (token) => {
 };
 
 export {
+  api,
   registerUser,
   loginUser,
   getCurrentUser,

@@ -5,6 +5,8 @@ import express from "express"
 import cors from "cors"
 import connectDB from "./src/config/db.js"
 import authRoutes from "./src/routes/auth.routes.js"
+import articleRoutes from "./src/routes/article.routes.js";
+import quizRoutes from "./src/routes/quiz.routes.js";
 
 const app = express();
 
@@ -18,7 +20,9 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/articles", articleRoutes);
+app.use("/api", quizRoutes);
 
 const PORT = process.env.PORT || 5004;
 
