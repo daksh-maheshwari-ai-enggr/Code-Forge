@@ -6,6 +6,7 @@ export const mockArticles = [
       "A quiet revolution in molecular biology has produced a tool precise enough to correct a single letter in the three-billion-character book of human DNA.",
     category: "Science",
     readTime: "7 min read",
+    date: "July 28, 2026",
     views: "4,821",
     likes: 342,
     isFeatured: true,
@@ -15,24 +16,28 @@ export const mockArticles = [
       name: "Priya Mehta",
       initials: "PM",
       role: "author",
+      bio: "Researcher in molecular biology and science writer.",
     },
   },
+
   {
     id: "2",
-    title: "The Night the Internet Was Born — and Almost Wasn't",
+    title: "The Night the Internet Was Born – and Almost Wasn't",
     summary:
-      "On October 29, 1969, a student typed two letters into a terminal at UCLA. The system crashed. The internet...",
+      "On October 29, 1969, a student typed two letters into a terminal at UCLA. The system crashed. The internet had arrived.",
     category: "Technology",
     readTime: "6 min read",
+    date: "July 30, 2026",
     views: "3,104",
     likes: 198,
     isFeatured: false,
     coverImage:
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80",
     author: {
       name: "Thomas Okeke",
       initials: "TO",
       role: "author",
+      bio: "Historian of technology. Former editor at Nature. Coffee enthusiast.",
     },
   },
 ];
