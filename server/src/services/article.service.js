@@ -13,7 +13,7 @@ export const createArticleService = async ({
     category,
     tags: tags || [],
     content,
-    status: "DRAFT",
+    status: "PUBLISHED",
   });
 
   return article;
