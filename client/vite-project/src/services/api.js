@@ -1,5 +1,6 @@
-const API_BASE_URL = "http://localhost:5004/api";
+import axios from "axios";
 
+const API_BASE_URL = "http://localhost:5004/api";
 const api = axios.create({
   baseURL: "http://localhost:5004/api",
 });
@@ -51,3 +52,4 @@ export {
   loginUser,
   getCurrentUser,
 };
+

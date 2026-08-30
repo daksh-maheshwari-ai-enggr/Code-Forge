@@ -5,7 +5,7 @@ import {
   getArticleQuiz,
 } from "../controllers/quiz.controller.js";
 
-import authMiddleware from "../middlewares/authMiddleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 

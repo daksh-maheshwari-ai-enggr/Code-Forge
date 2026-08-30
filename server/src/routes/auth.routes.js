@@ -1,17 +1,17 @@
 import express from "express"
 
-const {
+import  {
   register,
   login,
   getMe,
-} = require("../controllers/auth.controller");
+} from "../controllers/auth.controller.js";
 
-const {
+import  {
   validateRegister,
   validateLogin,
-} = require("../validators/auth.validator");
+} from "../validators/auth.validator.js";
 
-const authMiddleware = require("../middleware/auth.middleware");
+import  authMiddleware from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 

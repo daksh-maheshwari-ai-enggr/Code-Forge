@@ -13,6 +13,7 @@ import {
 export default function Navbar() {
   const { user } = useAuth();
   const location = useLocation();
+  const currentPath = location.pathname;
 
   const navItems = [
     {
@@ -29,12 +30,11 @@ export default function Navbar() {
 
   // Show author navigation for the current Figma/author UI.
   // Keep the existing role-based behavior for admin.
-  const isAuthorView =
-    user?.role === "AUTHOR" || user?.role == null;
+  const isAuthorView = user?.role === "AUTHOR";
 
   if (isAuthorView) {
     navItems.push(
-      { name: "Write", path: "/write", icon: FiEdit3 },
+      { name: "Write", path: "author/write", icon: FiEdit3 },
       { name: "Profile", path: "/profile", icon: FiUser },
     );
   }

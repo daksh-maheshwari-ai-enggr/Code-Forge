@@ -2,7 +2,7 @@ import {
   registerUser,
   loginUser,
   getCurrentUser,
-} from "../services/auth.service";
+} from "../services/auth.service.js";
 
 const register = async (req, res) => {
   try {
@@ -69,7 +69,7 @@ const getMe = async (req, res) => {
   }
 };
 
-export default {
+export {
   register,
   login,
   getMe,
