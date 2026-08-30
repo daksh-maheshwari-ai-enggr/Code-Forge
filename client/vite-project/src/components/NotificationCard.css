@@ -1,0 +1,143 @@
+.notification-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+
+  min-height: 88px;
+  padding: 22px 20px;
+
+  background: #ffffff;
+  border: 1px solid #dedbd5;
+  border-radius: 15px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.notification-card:hover {
+  border-color: #c9c5bd;
+  transform: translateY(-1px);
+}
+
+.notification-card.unread {
+  background: #eeece6;
+  border-color: #ccc9c1;
+}
+
+.notification-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #e3e1db;
+
+  margin-top: 1px;
+}
+
+.approved-icon {
+  color: #00aa83;
+}
+
+.changes-icon {
+  color: #f28b00;
+}
+
+.rejected-icon {
+  color: #ff2929;
+}
+
+.notification-content {
+  flex: 1;
+  padding-right: 15px;
+}
+
+.notification-message {
+  margin: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+
+  color: #111111;
+}
+
+.notification-message strong {
+  font-weight: 700;
+}
+
+.notification-time {
+  display: block;
+
+  margin-top: 7px;
+
+  color: #817970;
+
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+.unread-dot {
+  position: absolute;
+
+  top: 30px;
+  right: 20px;
+
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+  background: #c9823d;
+}
+
+@media (max-width: 768px) {
+  .notification-card {
+    padding: 20px 17px;
+    gap: 16px;
+  }
+
+  .notification-message {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .notification-card {
+    min-height: auto;
+    padding: 17px 15px;
+    gap: 13px;
+    border-radius: 13px;
+  }
+
+  .notification-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  .notification-message {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  .notification-time {
+    font-size: 12px;
+  }
+
+  .unread-dot {
+    width: 8px;
+    height: 8px;
+    top: 27px;
+    right: 15px;
+  }
+}
