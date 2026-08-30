@@ -8,7 +8,6 @@ import BrowsePage from "../pages/reader/BrowsePage";
 
 import Unauthorized from "../pages/Unauthorized";
 
-import ProtectedRoute from "../components/auth/ProtectedRoute";
 import RoleRoute from "../components/auth/RoleRoute";
 
 import AuthorDashboard from "../pages/author/dashboard";
@@ -19,18 +18,30 @@ function AppRoutes() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public */}
+        {/* ================= PUBLIC ================= */}
+
         <Route path="/" element={<HomePage />} />
+
         <Route path="/browse" element={<BrowsePage />} />
 
-        {/* Authentication */}
+
+        {/* ================= AUTH ================= */}
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
 
-        {/* Unauthorized */}
-        <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* Author */}
+        {/* ================= UNAUTHORIZED ================= */}
+
+        <Route
+          path="/unauthorized"
+          element={<Unauthorized />}
+        />
+
+
+        {/* ================= AUTHOR ================= */}
+
         <Route
           path="/author/dashboard"
           element={
@@ -40,7 +51,9 @@ function AppRoutes() {
           }
         />
 
-        {/* Admin */}
+
+        {/* ================= ADMIN ================= */}
+
         <Route
           path="/admin/dashboard"
           element={
