@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import {api} from "../../services/api.js";
 
 export default function CreateArticle() {
-  const { token } = useAuth();
+  const { user } = useAuth();
 
   const [quizEnabled, setQuizEnabled] = useState(true);
 
@@ -68,6 +68,7 @@ export default function CreateArticle() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const token = localStorage.getItem("authToken");
 
     try {
       if (!title.trim()) {

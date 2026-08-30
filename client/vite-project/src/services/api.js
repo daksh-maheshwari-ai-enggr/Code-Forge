@@ -5,6 +5,16 @@ const api = axios.create({
   baseURL: "http://localhost:5004/api",
 });
 
+const getArticles = async () => {
+  const response = await api.get("/articles");
+  return response.data;
+};
+
+const getArticleById = async (id) => {
+  const response = await api.get(`/articles/${id}`);
+  return response.data;
+};
+
 const request = async (endpoint, options = {}) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
@@ -46,10 +56,4 @@ const getCurrentUser = async (token) => {
   });
 };
 
-export {
-  api,
-  registerUser,
-  loginUser,
-  getCurrentUser,
-};
-
+export { api, registerUser, loginUser, getCurrentUser,getArticles, getArticleById };
