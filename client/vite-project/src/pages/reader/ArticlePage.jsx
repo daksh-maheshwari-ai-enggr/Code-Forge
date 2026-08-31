@@ -29,7 +29,7 @@ export default function ArticlePage() {
 
         const response = await getArticleById(id);
 
-        setArticle(response.data.data);
+        setArticle(response.data);
       } catch (error) {
         console.error("Failed to fetch article:", error);
         setError("Failed to load article.");
