@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import { FiEye, FiThumbsUp } from "react-icons/fi";
 
 export default function ArticleCard({ article }) {
+  const DEFAULT_COVER_IMAGE =
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80";
   return (
     <Link
-      to={`/read/${article.id}`}
+      to={`/read/${article._id}`}
       className="block h-full"
       aria-label={`Read ${article.title}`}
     >
@@ -12,7 +14,7 @@ export default function ArticleCard({ article }) {
         {/* Top Image */}
         <div className="relative h-48 w-full overflow-hidden bg-stone-100">
           <img
-            src={article.coverImage}
+            src={article.coverImage || DEFAULT_COVER_IMAGE}
             alt={article.title}
             className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           />
