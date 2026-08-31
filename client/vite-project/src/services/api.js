@@ -56,4 +56,23 @@ const getCurrentUser = async (token) => {
   });
 };
 
-export { api, registerUser, loginUser, getCurrentUser,getArticles, getArticleById };
+const getArticleQuiz = async (articleId) => {
+  const response = await api.get(`/articles/${articleId}/quiz`);
+  return response.data;
+};
+
+const createArticleQuiz = async (articleId, quizData, token) => {
+  const response = await api.post(
+    `/articles/${articleId}/quiz`,
+    quizData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export { api, registerUser, loginUser, getCurrentUser,getArticles, getArticleById, getArticleQuiz, createArticleQuiz };
