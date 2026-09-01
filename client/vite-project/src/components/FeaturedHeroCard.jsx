@@ -45,7 +45,7 @@ export default function FeaturedHeroCard({ article }) {
 
           <div className="flex items-center gap-4 pt-2 text-stone-300 text-xs">
             <span className="font-medium text-white">
-              {article.author.name}
+              {article.author?.name || "Unknown Author"}
             </span>
 
             <span>•</span>

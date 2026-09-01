@@ -1,33 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FiArrowLeft, FiCheck } from "react-icons/fi";
 
 import Navbar from "../../components/Navbar";
-import { quizData } from "../../data/quizData";
+import { getArticleQuiz } from "../../services/api";
 
 export default function QuizPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const quiz = quizData[id];
+  const [quiz, setQuiz] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [answers, setAnswers] = useState([]);
 
-  if (!quiz) {
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await getArticleQuiz(id);
+        console.log("QUIZ RESPONSE:", response.data);
+
+        setQuiz(response.data);
+      } catch (error) {
+        console.error("Failed to fetch quiz:", error);
+        setError("Quiz not available.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuiz();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+
+        <main className="min-h-screen bg-[#FBF8F3] flex items-center justify-center">
+          <p className="text-stone-500">Loading quiz...</p>
+        </main>
+      </>
+    );
+  }
+
+  if (error || !quiz) {
     return (
       <>
         <Navbar />
 
         <main className="min-h-screen bg-[#FBF8F3] flex items-center justify-center px-6">
           <div className="text-center">
-            <h1 className="font-serif text-3xl font-bold text-stone-900">
+            <h1 className="font-serif text-3xl font-bold">
               Quiz Not Available
             </h1>
 
             <p className="mt-3 text-sm text-stone-500">
-              There is no quiz configured for this article.
+              {error || "There is no quiz for this article."}
             </p>
 
             <Link
@@ -46,19 +81,19 @@ export default function QuizPage() {
   const question = quiz.questions[currentQuestion];
   const totalQuestions = quiz.questions.length;
 
-  const answeredCount = answers.filter(Boolean).length;
+  const answeredCount = answers.filter(
+    (answer) => answer !== undefined && answer !== null,
+  ).length;
 
   const progress =
-    currentQuestion === 0
-      ? 0
-      : (currentQuestion / (totalQuestions - 1)) * 100;
+    currentQuestion === 0 ? 0 : (currentQuestion / (totalQuestions - 1)) * 100;
 
-  const handleSelect = (answer) => {
-    setSelectedAnswer(answer);
+  const handleSelect = (index) => {
+    setSelectedAnswer(index);
   };
 
   const handleNext = () => {
-    if (!selectedAnswer) return;
+    if (selectedAnswer === null) return;
 
     const updatedAnswers = [...answers];
     updatedAnswers[currentQuestion] = selectedAnswer;
@@ -68,21 +103,17 @@ export default function QuizPage() {
     if (currentQuestion < totalQuestions - 1) {
       setCurrentQuestion((previous) => previous + 1);
 
-      setSelectedAnswer(
-        updatedAnswers[currentQuestion + 1] || null
-      );
+      setSelectedAnswer(updatedAnswers[currentQuestion + 1] ?? null);
 
       return;
     }
 
-    localStorage.setItem(
-      `quizAnswers-${id}`,
-      JSON.stringify(updatedAnswers)
-    );
+    localStorage.setItem(`quizAnswers-${id}`, JSON.stringify(updatedAnswers));
 
     navigate(`/read/${id}/result`, {
       state: {
         answers: updatedAnswers,
+        quiz: quiz,
       },
     });
   };
@@ -127,20 +158,20 @@ export default function QuizPage() {
           {/* Question Card */}
           <section className="mt-11 rounded-2xl border border-stone-200 bg-white px-10 py-10">
             <h1 className="font-serif text-[25px] font-bold leading-[1.25] text-[#171411]">
-              {question.question}
+              {question.questionText}
             </h1>
 
             {/* Options */}
             <div className="mt-9 space-y-3.5">
               {question.options.map((option, index) => {
-                const isSelected = selectedAnswer === option;
+                const isSelected = selectedAnswer === index;
                 const letter = String.fromCharCode(65 + index);
 
                 return (
                   <button
-                    key={option}
+                    key={index}
                     type="button"
-                    onClick={() => handleSelect(option)}
+                    onClick={() => handleSelect(index)}
                     className={`w-full rounded-xl border px-5 py-4 text-left transition-colors ${
                       isSelected
                         ? "border-[#AAB4AC] bg-[#F0F3EF]"
@@ -176,9 +207,9 @@ export default function QuizPage() {
           <button
             type="button"
             onClick={handleNext}
-            disabled={!selectedAnswer}
+            disabled={selectedAnswer === null}
             className={`mt-7 w-full rounded-lg py-[15px] text-[16px] font-semibold transition-colors ${
-              selectedAnswer
+              selectedAnswer!==null
                 ? "bg-[#1B3B2B] text-white hover:bg-[#153124]"
                 : "cursor-not-allowed bg-[#A8AEA9] text-white"
             }`}

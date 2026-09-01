@@ -34,7 +34,7 @@ export default function Navbar() {
 
   if (isAuthorView) {
     navItems.push(
-      { name: "Write", path: "author/write", icon: FiEdit3 },
+      { name: "Write", path: "/author/write", icon: FiEdit3 },
       { name: "Profile", path: "/profile", icon: FiUser },
     );
   }

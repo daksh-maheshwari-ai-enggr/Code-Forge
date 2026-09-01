@@ -44,11 +44,11 @@ export default function ArticleCard({ article }) {
           <div className="flex items-center justify-between pt-3 border-t border-stone-100 text-xs text-stone-500 mt-auto">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full bg-[#1B3B2B] text-[#D8E6DC] flex items-center justify-center text-[10px] font-bold">
-                {article.author.initials}
+                {article.author?.initials || "NA"}{" "}
               </div>
 
               <span className="font-medium text-stone-700">
-                {article.author.name}
+                {article.author?.name || "Unknown Author"}
               </span>
             </div>
 

@@ -3,14 +3,15 @@ import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import { LuTrophy } from "react-icons/lu";
 
 import Navbar from "../../components/Navbar";
-import { quizData } from "../../data/quizData";
 
 export default function QuizResultPage() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const quiz = quizData[id];
+  const quiz = location.state?.quiz;
+
+  let answers = location.state?.answers;
 
   if (!quiz) {
     return (
@@ -24,13 +25,9 @@ export default function QuizResultPage() {
     );
   }
 
-  let answers = location.state?.answers;
-
   if (!answers) {
     try {
-      answers = JSON.parse(
-        localStorage.getItem(`quizAnswers-${id}`) || "[]",
-      );
+      answers = JSON.parse(localStorage.getItem(`quizAnswers-${id}`) || "[]");
     } catch {
       answers = [];
     }
@@ -39,7 +36,9 @@ export default function QuizResultPage() {
   const questions = quiz.questions;
 
   const score = questions.reduce((total, question, index) => {
-    return total + (answers[index] === question.answer ? 1 : 0);
+    const correctAnswer = 0;
+
+    return total + (answers[index] === correctAnswer ? 1 : 0);
   }, 0);
 
   const percentage = Math.round((score / questions.length) * 100);
@@ -90,8 +89,7 @@ export default function QuizResultPage() {
           {/* Answer Review */}
           <div className="mt-12 space-y-5">
             {questions.map((question, index) => {
-              const isCorrect =
-                answers[index] === question.answer;
+              const isCorrect = answers[index] === 0;
 
               return (
                 <article
@@ -125,7 +123,9 @@ export default function QuizResultPage() {
                       </h2>
 
                       <p className="mt-2 text-[14px] leading-[1.55] text-stone-500">
-                        {question.explanation}
+                        {isCorrect
+                          ? "Correct answer!"
+                          : `Correct answer: ${question.options[0]}`}
                       </p>
                     </div>
                   </div>
