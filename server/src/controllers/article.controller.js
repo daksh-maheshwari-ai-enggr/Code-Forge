@@ -11,9 +11,9 @@ import Notification from "../models/Notification.js";
 
 export const createArticle = async (req, res, next) => {
   try {
-    const { title, category, tags, content, coverImage } = req.body;
+    const { title = "", category = "", tags, content = "", coverImage, status = "PENDING_REVIEW" } = req.body;
 
-    if (!title || !category || !content) {
+    if (status !== "DRAFT" && (!title || !category || !content)) {
       return res.status(400).json({
         success: false,
         message: "Title, category and content are required",
@@ -27,6 +27,7 @@ export const createArticle = async (req, res, next) => {
       tags,
       content,
       coverImage,
+      status,
     });
 
     res.status(201).json({
@@ -168,9 +169,9 @@ export const reviewArticle = async (req, res, next) => {
 
 export const editArticle = async (req, res, next) => {
   try {
-    const { title, category, tags, content, coverImage } = req.body;
+    const { title = "", category = "", tags, content = "", coverImage, status = "PENDING_REVIEW" } = req.body;
 
-    if (!title || !category || !content) {
+    if (status !== "DRAFT" && (!title || !category || !content)) {
       return res.status(400).json({
         success: false,
         message: "Title, category and content are required",
@@ -185,6 +186,7 @@ export const editArticle = async (req, res, next) => {
       tags,
       content,
       coverImage,
+      status,
     });
 
     res.status(200).json({

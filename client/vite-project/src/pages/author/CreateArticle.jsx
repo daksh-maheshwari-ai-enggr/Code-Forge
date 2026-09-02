@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiPlus, FiTrash2 } from "react-icons/fi";
 import Navbar from "../../components/Navbar";
 import { useAuth } from "../../context/AuthContext";
@@ -6,6 +7,7 @@ import {api} from "../../services/api.js";
 
 export default function CreateArticle() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [quizEnabled, setQuizEnabled] = useState(true);
 
@@ -28,7 +30,7 @@ export default function CreateArticle() {
     {
       questionText: "",
       options: ["", "", "", ""],
-      correctIndex: 0,
+        correctIndex: -1,
     },
   ]);
 
@@ -39,7 +41,7 @@ export default function CreateArticle() {
       {
         questionText: "",
         options: ["", "", "", ""],
-        correctIndex: 0,
+        correctIndex: -1,
       },
     ]);
   };
@@ -68,27 +70,32 @@ export default function CreateArticle() {
     setQuestions(updated);
   };
 
-  const handleSubmit = async (event) => {
+  const saveArticle = async (event, status) => {
     event.preventDefault();
     if (submitting) return;
     const token = localStorage.getItem("authToken");
 
     try {
       setSubmitting(true);
-      if (!title.trim()) {
+      if (status !== "DRAFT" && !title.trim()) {
         alert("Please enter article title.");
         return;
       }
 
-      if (!category) {
+      if (status !== "DRAFT" && !category) {
         alert("Please select a category.");
         return;
       }
 
-      if (!content.trim()) {
+      if (status !== "DRAFT" && !content.trim()) {
         alert("Please write article content.");
         return;
       }
+
+        if (status !== "DRAFT" && quizEnabled && questions.some((question) => question.correctIndex < 0)) {
+          alert("Please mark one correct option for every quiz question.");
+          return;
+        }
 
       // 1. Create Article
       const articleResponse = await api.post(
@@ -102,6 +109,7 @@ export default function CreateArticle() {
             .filter(Boolean),
           coverImage: coverImage.trim(),
           content: content.trim(),
+          status,
         },
         {
           headers: {
@@ -114,8 +122,8 @@ export default function CreateArticle() {
 
       console.log("Article created:", article);
 
-      // 2. Create Quiz if enabled
-      if (quizEnabled) {
+      // Quizzes are added when an article is submitted, not while it is incomplete.
+      if (status !== "DRAFT" && quizEnabled) {
         await api.post(
           `/articles/${article._id}/quiz`,
           {
@@ -135,7 +143,8 @@ export default function CreateArticle() {
         );
       }
 
-      alert("Article created successfully!");
+      alert(status === "DRAFT" ? "Draft saved successfully!" : "Article submitted for review!");
+      navigate("/profile");
       setTitle("");
       setCoverImage("");
       setContent("");
@@ -167,18 +176,7 @@ export default function CreateArticle() {
               </p>
             </div>
 
-            <div>
-              <label className="text-sm font-medium">Poster URL</label>
-              <input
-                value={coverImage}
-                onChange={(e) => setCoverImage(e.target.value)}
-                type="url"
-                placeholder="https://example.com/article-poster.jpg"
-                className="w-full mt-2 bg-[#EFEAE0] rounded-lg px-4 py-3"
-              />
-            </div>
-
-            <button className="flex items-center gap-2 text-stone-600 hover:text-black">
+            <button type="button" onClick={() => navigate("/profile")} className="flex items-center gap-2 text-stone-600 hover:text-black">
               <FiArrowLeft />
               Cancel
             </button>
@@ -229,6 +227,17 @@ export default function CreateArticle() {
                   className="w-full mt-2 bg-[#EFEAE0] rounded-lg px-4 py-3"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Poster URL</label>
+              <input
+                value={coverImage}
+                onChange={(e) => setCoverImage(e.target.value)}
+                type="url"
+                placeholder="https://example.com/article-poster.jpg"
+                className="w-full mt-2 bg-[#EFEAE0] rounded-lg px-4 py-3"
+              />
             </div>
 
             {/* CONTENT */}
@@ -311,6 +320,13 @@ export default function CreateArticle() {
                             }`}
                           >
                             <input
+                              type="radio"
+                              name={`correct-${qIndex}`}
+                              checked={isCorrect}
+                              onChange={() => selectCorrect(qIndex, optIndex)}
+                              className="mr-2 accent-green-700"
+                            />
+                            <input
                               type="text"
                               value={opt}
                               onChange={(e) =>
@@ -340,11 +356,18 @@ export default function CreateArticle() {
 
           {/* ACTION BUTTONS */}
           <div className="flex justify-end gap-4">
-            <button className="px-6 py-3 border rounded-lg">Save Draft</button>
+            <button
+              type="button"
+              onClick={(event) => saveArticle(event, "DRAFT")}
+              disabled={submitting}
+              className="px-6 py-3 border rounded-lg disabled:opacity-60"
+            >
+              Save Draft
+            </button>
 
             <button
               type="button"
-              onClick={handleSubmit}
+              onClick={(event) => saveArticle(event, "PENDING_REVIEW")}
               className="px-6 py-3 bg-[#1B3B2B] text-white rounded-lg"
             >
               {submitting ? "Submitting..." : "Submit for Review"}

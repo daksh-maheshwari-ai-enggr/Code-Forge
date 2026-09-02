@@ -18,6 +18,7 @@ export default function EditArticle() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [articleStatus, setArticleStatus] = useState("DRAFT");
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -30,6 +31,7 @@ export default function EditArticle() {
         });
 
         const article = response.data.data;
+        setArticleStatus(article.status || "DRAFT");
         setForm({
           title: article.title || "",
           category: article.category || "",
@@ -51,7 +53,7 @@ export default function EditArticle() {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event, status = "PENDING_REVIEW") => {
     event.preventDefault();
     const token = localStorage.getItem("authToken");
 
@@ -68,6 +70,7 @@ export default function EditArticle() {
             .filter(Boolean),
           coverImage: form.coverImage.trim(),
           content: form.content.trim(),
+          status,
         },
         {
           headers: {
@@ -182,11 +185,20 @@ export default function EditArticle() {
 
             <div className="flex justify-end">
               <button
-                type="submit"
+                type="button"
                 disabled={saving}
+                onClick={(event) => handleSubmit(event, "DRAFT")}
+                className="rounded-xl border border-[#1d4b39] px-5 py-3 text-sm font-semibold text-[#1d4b39] hover:bg-[#edf3ee] disabled:opacity-60"
+              >
+                {saving && articleStatus === "DRAFT" ? "Saving..." : "Save Draft"}
+              </button>
+              <button
+                type="button"
+                disabled={saving}
+                onClick={(event) => handleSubmit(event, "PENDING_REVIEW")}
                 className="rounded-xl bg-[#1d4b39] px-5 py-3 text-sm font-semibold text-white hover:bg-[#163e2f] disabled:opacity-60"
               >
-                {saving ? "Saving..." : "Save & Resubmit"}
+                {saving && articleStatus !== "DRAFT" ? "Submitting..." : "Submit for Review"}
               </button>
             </div>
           </form>

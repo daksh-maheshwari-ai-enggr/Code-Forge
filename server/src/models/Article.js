@@ -10,13 +10,13 @@ const articleSchema = new mongoose.Schema(
 
     title: {
       type: String,
-      required: true,
+      default: "",
       trim: true,
     },
 
     category: {
       type: String,
-      required: true,
+      default: "",
       trim: true,
     },
 
@@ -27,7 +27,7 @@ const articleSchema = new mongoose.Schema(
 
     content: {
       type: String,
-      required: true,
+      default: "",
     },
 
     coverImage: {

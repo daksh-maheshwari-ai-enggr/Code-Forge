@@ -55,7 +55,7 @@ function Login() {
       if (user.role === "ADMIN") {
         navigate("/admin/dashboard");
       } else {
-        navigate("/author/dashboard");
+        navigate("/");
       }
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");

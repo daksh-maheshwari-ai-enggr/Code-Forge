@@ -7,11 +7,12 @@ export const createArticleService = async ({
   tags,
   content,
   coverImage,
+  status = "PENDING_REVIEW",
 }) => {
   const existingSubmission = await Article.findOne({
     author: authorId,
     title: title.trim(),
-    status: { $in: ["PENDING_REVIEW", "CHANGES_REQUESTED"] },
+    status: { $in: ["DRAFT", "PENDING_REVIEW", "CHANGES_REQUESTED"] },
   });
 
   if (existingSubmission) {
@@ -27,7 +28,7 @@ export const createArticleService = async ({
     tags: tags || [],
     content,
     coverImage: coverImage || "",
-    status: "PENDING_REVIEW",
+    status,
   });
 
   return article;
@@ -75,7 +76,7 @@ export const updateArticleStatusService = async ({ articleId, status, reviewReas
   return article;
 };
 
-export const updateArticleService = async ({ articleId, authorId, title, category, tags, content, coverImage }) => {
+export const updateArticleService = async ({ articleId, authorId, title, category, tags, content, coverImage, status = "PENDING_REVIEW" }) => {
   const article = await Article.findOne({ _id: articleId, author: authorId });
 
   if (!article) {
@@ -89,7 +90,7 @@ export const updateArticleService = async ({ articleId, authorId, title, categor
   article.tags = tags || [];
   article.content = content;
   article.coverImage = coverImage || "";
-  article.status = "PENDING_REVIEW";
+  article.status = status;
   article.reviewReason = "";
   await article.save();
 

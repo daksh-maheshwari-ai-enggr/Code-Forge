@@ -156,13 +156,13 @@ export default function Profile() {
                       {statusLabels[article.status] || article.status}
                     </span>
 
-                    {article.status === "CHANGES_REQUESTED" && (
+                    {(article.status === "DRAFT" || article.status === "CHANGES_REQUESTED") && (
                       <Link
                         to={`/author/articles/${article._id}/edit`}
                         className="inline-flex items-center gap-2 rounded-xl bg-[#1d4b39] px-3 py-2 text-sm font-semibold text-white hover:bg-[#163e2f]"
                       >
                         <FiEdit3 className="h-4 w-4" />
-                        Edit & Resubmit
+                        {article.status === "DRAFT" ? "Edit Draft" : "Edit & Resubmit"}
                       </Link>
                     )}
 
