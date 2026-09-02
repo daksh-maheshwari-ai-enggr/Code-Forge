@@ -4,6 +4,7 @@ dotenv.config();
 import express from "express"
 import cors from "cors"
 import connectDB from "./src/config/db.js"
+import seedAdminUser from "./src/seeds/seedAdmin.js"
 import authRoutes from "./src/routes/auth.routes.js"
 import articleRoutes from "./src/routes/article.routes.js";
 import quizRoutes from "./src/routes/quiz.routes.js";
@@ -29,6 +30,7 @@ const PORT = process.env.PORT || 5004;
 const startServer = async () => {
   try {
     await connectDB();
+    await seedAdminUser();
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
