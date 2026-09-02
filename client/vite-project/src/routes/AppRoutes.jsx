@@ -18,6 +18,7 @@ import CreateArticle from "../pages/author/CreateArticle";
 import ArticlePage from "../pages/reader/ArticlePage";
 import QuizPage from "../pages/reader/QuizPage";
 import QuizResultPage from "../pages/reader/QuizResultPage";
+import Notifications from "../pages/Notifications";
 
 function AppRoutes() {
   return (
@@ -65,6 +66,8 @@ function AppRoutes() {
             </RoleRoute>
           }
         />
+
+        <Route path="/notifications" element={<Notifications />} />
       </Routes>
     </BrowserRouter>
   );
