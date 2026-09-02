@@ -21,7 +21,7 @@ export const createArticleQuizService = async ({
   }
 
   for (const question of questions) {
-    if (!question.questionText) {
+    if (!question.questionText?.trim()) {
       throw new Error("Question text is required");
     }
 
@@ -33,7 +33,12 @@ export const createArticleQuizService = async ({
       throw new Error("Each question must have exactly 4 options");
     }
 
+    if (question.options.some((option) => !option?.trim())) {
+      throw new Error("Every quiz option must have text");
+    }
+
     if (
+      !Number.isInteger(question.correctOptionIndex) ||
       question.correctOptionIndex < 0 ||
       question.correctOptionIndex > 3
     ) {
@@ -46,7 +51,8 @@ export const createArticleQuizService = async ({
   });
 
   if (existingQuiz) {
-    throw new Error("Quiz already exists for this article");
+    existingQuiz.questions = questions;
+    return await existingQuiz.save();
   }
 
   return await Quiz.create({

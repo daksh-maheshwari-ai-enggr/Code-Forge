@@ -92,8 +92,15 @@ export default function CreateArticle() {
         return;
       }
 
-        if (status !== "DRAFT" && quizEnabled && questions.some((question) => question.correctIndex < 0)) {
-          alert("Please mark one correct option for every quiz question.");
+        const quizIsComplete = questions.length > 0 && questions.every(
+          (question) =>
+            question.questionText.trim() &&
+            question.options.every((option) => option.trim()) &&
+            question.correctIndex >= 0,
+        );
+
+        if (status !== "DRAFT" && quizEnabled && !quizIsComplete) {
+          alert("Please add text to every question and option, then mark one correct option for every question.");
           return;
         }
 
@@ -123,7 +130,7 @@ export default function CreateArticle() {
       console.log("Article created:", article);
 
       // Quizzes are added when an article is submitted, not while it is incomplete.
-      if (status !== "DRAFT" && quizEnabled) {
+      if (quizEnabled && quizIsComplete) {
         await api.post(
           `/articles/${article._id}/quiz`,
           {

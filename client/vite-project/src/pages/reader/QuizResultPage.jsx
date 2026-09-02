@@ -36,7 +36,7 @@ export default function QuizResultPage() {
   const questions = quiz.questions;
 
   const score = questions.reduce((total, question, index) => {
-    const correctAnswer = 0;
+    const correctAnswer = question.correctOptionIndex;
 
     return total + (answers[index] === correctAnswer ? 1 : 0);
   }, 0);
@@ -89,7 +89,7 @@ export default function QuizResultPage() {
           {/* Answer Review */}
           <div className="mt-12 space-y-5">
             {questions.map((question, index) => {
-              const isCorrect = answers[index] === 0;
+              const isCorrect = answers[index] === question.correctOptionIndex;
 
               return (
                 <article
@@ -119,13 +119,13 @@ export default function QuizResultPage() {
                     {/* Question + Explanation */}
                     <div className="min-w-0 flex-1">
                       <h2 className="text-[16px] font-medium leading-[1.45] text-[#171411] md:text-[17px]">
-                        {question.question}
+                        {question.questionText}
                       </h2>
 
                       <p className="mt-2 text-[14px] leading-[1.55] text-stone-500">
                         {isCorrect
                           ? "Correct answer!"
-                          : `Correct answer: ${question.options[0]}`}
+                          : `Correct answer: ${question.options[question.correctOptionIndex]}`}
                       </p>
                     </div>
                   </div>
