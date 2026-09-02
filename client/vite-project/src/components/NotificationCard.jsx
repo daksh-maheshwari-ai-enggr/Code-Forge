@@ -61,6 +61,7 @@ function NotificationIcon({ type }) {
 export default function NotificationCard({
   type,
   articleName,
+  reason,
   time,
   unread,
   onClick,
@@ -78,8 +79,13 @@ export default function NotificationCard({
       case "changes":
         return (
           <>
-            Admin has requested changes to{" "}
-            <strong>"{articleName}"</strong>.
+            Admin has requested changes to <strong>"{articleName}"</strong>.
+            {reason ? (
+              <>
+                <br />
+                <span className="text-[#5a544d]">Reason: {reason}</span>
+              </>
+            ) : null}
           </>
         );
 

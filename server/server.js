@@ -7,6 +7,7 @@ import connectDB from "./src/config/db.js"
 import seedAdminUser from "./src/seeds/seedAdmin.js"
 import authRoutes from "./src/routes/auth.routes.js"
 import articleRoutes from "./src/routes/article.routes.js";
+import notificationRoutes from "./src/routes/notification.routes.js";
 import quizRoutes from "./src/routes/quiz.routes.js";
 
 const app = express();
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/articles", articleRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api", quizRoutes);
 
 const PORT = process.env.PORT || 5004;

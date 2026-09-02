@@ -42,6 +42,11 @@ const articleSchema = new mongoose.Schema(
       ],
       default: "DRAFT",
     },
+    reviewReason: {
+      type: String,
+      default: "",
+      trim: true,
+    },
   },
   {
     timestamps: true,

@@ -61,6 +61,62 @@ const getArticleQuiz = async (articleId) => {
   return response.data;
 };
 
+const getMyArticles = async (token) => {
+  const response = await api.get("/articles/mine", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+const getPendingArticles = async (token) => {
+  const response = await api.get("/articles/pending", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+const reviewArticle = async (articleId, action, token, reason = "") => {
+  const response = await api.patch(
+    `/articles/${articleId}/review`,
+    {
+      action,
+      ...(reason ? { reason } : {}),
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+const getNotifications = async (token) => {
+  const response = await api.get("/notifications", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+const markNotificationsRead = async (token) => {
+  const response = await api.patch(
+    "/notifications/read-all",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
 const createArticleQuiz = async (articleId, quizData, token) => {
   const response = await api.post(
     `/articles/${articleId}/quiz`,
@@ -75,4 +131,18 @@ const createArticleQuiz = async (articleId, quizData, token) => {
   return response.data;
 };
 
-export { api, registerUser, loginUser, getCurrentUser,getArticles, getArticleById, getArticleQuiz, createArticleQuiz };
+export {
+  api,
+  registerUser,
+  loginUser,
+  getCurrentUser,
+  getArticles,
+  getArticleById,
+  getArticleQuiz,
+  getMyArticles,
+  getPendingArticles,
+  reviewArticle,
+  getNotifications,
+  markNotificationsRead,
+  createArticleQuiz,
+};

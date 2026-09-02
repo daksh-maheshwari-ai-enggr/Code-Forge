@@ -14,6 +14,8 @@ import RoleRoute from "../components/auth/RoleRoute";
 import AuthorDashboard from "../pages/author/dashboard";
 import AdminDashboard from "../pages/admin/admin";
 import CreateArticle from "../pages/author/CreateArticle";
+import Profile from "../pages/author/Profile";
+import EditArticle from "../pages/author/EditArticle";
 
 import ArticlePage from "../pages/reader/ArticlePage";
 import QuizPage from "../pages/reader/QuizPage";
@@ -67,7 +69,32 @@ function AppRoutes() {
           }
         />
 
-        <Route path="/notifications" element={<Notifications />} />
+        <Route
+          path="/profile"
+          element={
+            <RoleRoute allowedRoles={["AUTHOR"]}>
+              <Profile />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="/author/articles/:id/edit"
+          element={
+            <RoleRoute allowedRoles={["AUTHOR"]}>
+              <EditArticle />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <RoleRoute allowedRoles={["AUTHOR"]}>
+              <Notifications />
+            </RoleRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

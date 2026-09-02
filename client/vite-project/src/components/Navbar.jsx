@@ -15,6 +15,13 @@ export default function Navbar() {
   const navigate = useNavigate();
   const currentPath = location.pathname;
 
+  const initials = user?.name
+    ?.split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   const navItems = [
     {
       name: "Home",
@@ -53,6 +60,7 @@ export default function Navbar() {
   }
 
   const handleLogin = () => navigate("/login");
+  const handleNotifications = () => navigate("/notifications");
 
   const handleLogout = () => {
     logout();
@@ -104,9 +112,20 @@ export default function Navbar() {
             </button>
           ) : (
             <>
-              <div className="flex items-center gap-3 rounded-xl border border-stone-300 bg-[#F4F0E8] px-3 py-2 text-sm text-stone-700">
-                <span>{user.name || "User"}</span>
-              </div>
+              {user.role === "AUTHOR" ? (
+                <div className="flex items-center gap-3 rounded-xl border border-stone-300 bg-[#F4F0E8] px-3 py-2 text-sm text-stone-700">
+                  <img
+                    src={user.avatarUrl || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80"}
+                    alt={user.name}
+                    className="h-8 w-8 rounded-full object-cover"
+                  />
+                  <span>{user.name || "User"}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 rounded-xl border border-stone-300 bg-[#F4F0E8] px-3 py-2 text-sm text-stone-700">
+                  <span>{user.name || "User"}</span>
+                </div>
+              )}
 
               <button
                 type="button"
@@ -118,15 +137,21 @@ export default function Navbar() {
             </>
           )}
 
-          {user && (
+          {user && user.role === "AUTHOR" && (
             <button
               type="button"
+              onClick={handleNotifications}
               aria-label="Notifications"
               className="relative flex h-9 w-9 items-center justify-center rounded-full text-stone-500 transition hover:bg-stone-200/60 hover:text-stone-800"
             >
               <FiBell className="h-[19px] w-[19px]" />
               <span className="absolute right-[5px] top-[4px] h-2 w-2 rounded-full bg-[#C47D32]" />
             </button>
+          )}
+          {user && user.role === "AUTHOR" && (
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1B3B2B] text-xs font-semibold text-[#D8E6DC]">
+              {initials || "U"}
+            </div>
           )}
         </div>
       </div>
