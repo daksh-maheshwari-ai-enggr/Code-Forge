@@ -114,11 +114,9 @@ export default function Navbar() {
             <>
               {user.role === "AUTHOR" ? (
                 <div className="flex items-center gap-3 rounded-xl border border-stone-300 bg-[#F4F0E8] px-3 py-2 text-sm text-stone-700">
-                  <img
-                    src={user.avatarUrl || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80"}
-                    alt={user.name}
-                    className="h-8 w-8 rounded-full object-cover"
-                  />
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt={user.name} className="h-8 w-8 rounded-full object-cover" />
+                  ) : null}
                   <span>{user.name || "User"}</span>
                 </div>
               ) : (

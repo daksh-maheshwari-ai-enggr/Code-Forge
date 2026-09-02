@@ -13,6 +13,7 @@ export default function EditArticle() {
     title: "",
     category: "",
     tags: "",
+    coverImage: "",
     content: "",
   });
   const [loading, setLoading] = useState(true);
@@ -33,6 +34,7 @@ export default function EditArticle() {
           title: article.title || "",
           category: article.category || "",
           tags: (article.tags || []).join(", "),
+          coverImage: article.coverImage || "",
           content: article.content || "",
         });
       } catch (error) {
@@ -64,6 +66,7 @@ export default function EditArticle() {
             .split(",")
             .map((tag) => tag.trim())
             .filter(Boolean),
+          coverImage: form.coverImage.trim(),
           content: form.content.trim(),
         },
         {
@@ -155,11 +158,23 @@ export default function EditArticle() {
               </div>
 
               <div>
+                <label className="text-sm font-medium">Poster URL</label>
+                <input
+                  value={form.coverImage}
+                  onChange={(e) => handleChange("coverImage", e.target.value)}
+                  type="url"
+                  placeholder="https://example.com/article-poster.jpg"
+                  className="w-full mt-2 bg-[#EFEAE0] rounded-lg px-4 py-3"
+                />
+              </div>
+
+              <div>
                 <label className="text-sm font-medium">Content</label>
                 <textarea
                   value={form.content}
                   onChange={(e) => handleChange("content", e.target.value)}
                   rows="10"
+                  placeholder="# Heading\n\nWrite with **bold text** and Markdown headings..."
                   className="w-full mt-2 bg-[#EFEAE0] rounded-lg px-4 py-3"
                 />
               </div>

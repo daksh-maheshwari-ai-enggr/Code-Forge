@@ -11,7 +11,7 @@ import Notification from "../models/Notification.js";
 
 export const createArticle = async (req, res, next) => {
   try {
-    const { title, category, tags, content } = req.body;
+    const { title, category, tags, content, coverImage } = req.body;
 
     if (!title || !category || !content) {
       return res.status(400).json({
@@ -26,6 +26,7 @@ export const createArticle = async (req, res, next) => {
       category,
       tags,
       content,
+      coverImage,
     });
 
     res.status(201).json({
@@ -167,7 +168,7 @@ export const reviewArticle = async (req, res, next) => {
 
 export const editArticle = async (req, res, next) => {
   try {
-    const { title, category, tags, content } = req.body;
+    const { title, category, tags, content, coverImage } = req.body;
 
     if (!title || !category || !content) {
       return res.status(400).json({
@@ -183,6 +184,7 @@ export const editArticle = async (req, res, next) => {
       category,
       tags,
       content,
+      coverImage,
     });
 
     res.status(200).json({

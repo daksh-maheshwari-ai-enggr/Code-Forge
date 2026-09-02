@@ -6,13 +6,27 @@ export const createArticleService = async ({
   category,
   tags,
   content,
+  coverImage,
 }) => {
+  const existingSubmission = await Article.findOne({
+    author: authorId,
+    title: title.trim(),
+    status: { $in: ["PENDING_REVIEW", "CHANGES_REQUESTED"] },
+  });
+
+  if (existingSubmission) {
+    const error = new Error("This article is already waiting for review");
+    error.statusCode = 409;
+    throw error;
+  }
+
   const article = await Article.create({
     author: authorId,
     title,
     category,
     tags: tags || [],
     content,
+    coverImage: coverImage || "",
     status: "PENDING_REVIEW",
   });
 
@@ -61,7 +75,7 @@ export const updateArticleStatusService = async ({ articleId, status, reviewReas
   return article;
 };
 
-export const updateArticleService = async ({ articleId, authorId, title, category, tags, content }) => {
+export const updateArticleService = async ({ articleId, authorId, title, category, tags, content, coverImage }) => {
   const article = await Article.findOne({ _id: articleId, author: authorId });
 
   if (!article) {
@@ -74,6 +88,7 @@ export const updateArticleService = async ({ articleId, authorId, title, categor
   article.category = category;
   article.tags = tags || [];
   article.content = content;
+  article.coverImage = coverImage || "";
   article.status = "PENDING_REVIEW";
   article.reviewReason = "";
   await article.save();

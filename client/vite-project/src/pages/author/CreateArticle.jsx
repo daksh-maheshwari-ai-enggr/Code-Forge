@@ -12,7 +12,9 @@ export default function CreateArticle() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState("");
+  const [coverImage, setCoverImage] = useState("");
   const [content, setContent] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const categories = [
     "Science",
@@ -68,9 +70,11 @@ export default function CreateArticle() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (submitting) return;
     const token = localStorage.getItem("authToken");
 
     try {
+      setSubmitting(true);
       if (!title.trim()) {
         alert("Please enter article title.");
         return;
@@ -96,6 +100,7 @@ export default function CreateArticle() {
             .split(",")
             .map((tag) => tag.trim())
             .filter(Boolean),
+          coverImage: coverImage.trim(),
           content: content.trim(),
         },
         {
@@ -131,6 +136,9 @@ export default function CreateArticle() {
       }
 
       alert("Article created successfully!");
+      setTitle("");
+      setCoverImage("");
+      setContent("");
     } catch (error) {
       console.error(error);
 
@@ -138,6 +146,8 @@ export default function CreateArticle() {
         error.response?.data?.message ||
           "Something went wrong while creating the article.",
       );
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -155,6 +165,17 @@ export default function CreateArticle() {
               <p className="text-stone-600 mt-1">
                 Write your article and add a quiz before submitting for review.
               </p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Poster URL</label>
+              <input
+                value={coverImage}
+                onChange={(e) => setCoverImage(e.target.value)}
+                type="url"
+                placeholder="https://example.com/article-poster.jpg"
+                className="w-full mt-2 bg-[#EFEAE0] rounded-lg px-4 py-3"
+              />
             </div>
 
             <button className="flex items-center gap-2 text-stone-600 hover:text-black">
@@ -217,7 +238,7 @@ export default function CreateArticle() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows="6"
-                placeholder="Write your article here..."
+                placeholder="# Heading\n\nWrite with **bold text** and Markdown headings..."
                 className="w-full mt-2 bg-[#EFEAE0] rounded-lg px-4 py-3"
               />
             </div>
@@ -326,7 +347,7 @@ export default function CreateArticle() {
               onClick={handleSubmit}
               className="px-6 py-3 bg-[#1B3B2B] text-white rounded-lg"
             >
-              Submit for Review
+              {submitting ? "Submitting..." : "Submit for Review"}
             </button>
           </div>
         </div>

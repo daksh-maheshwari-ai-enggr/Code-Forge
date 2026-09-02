@@ -34,6 +34,7 @@ function AdminDashboard() {
   const [queue, setQueue] = useState([]);
   const [selectedArticleId, setSelectedArticleId] = useState(null);
   const [changeReason, setChangeReason] = useState("");
+  const [reviewing, setReviewing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -46,7 +47,9 @@ function AdminDashboard() {
         setError("");
 
         const response = await getPendingArticles(token);
-        const articles = response.data || [];
+        const articles = Array.from(
+          new Map((response.data || []).map((article) => [article._id, article])).values(),
+        );
 
         setQueue(articles);
         setSelectedArticleId(articles[0]?._id || null);
@@ -74,9 +77,11 @@ function AdminDashboard() {
   );
 
   const handleDecision = async (articleId, decision) => {
+    if (reviewing) return;
     const token = localStorage.getItem("authToken");
 
     try {
+      setReviewing(true);
       if (decision === "REQUEST_CHANGES" && !changeReason.trim()) {
         alert("Please provide a reason for requesting changes.");
         return;
@@ -90,6 +95,8 @@ function AdminDashboard() {
     } catch (err) {
       console.error("Failed to update article review:", err);
       alert(err.message || "Unable to update article review.");
+    } finally {
+      setReviewing(false);
     }
   };
 
@@ -242,6 +249,7 @@ function AdminDashboard() {
                           <button
                             type="button"
                             onClick={() => handleDecision(selectedArticle._id, "APPROVE")}
+                            disabled={reviewing}
                             className="inline-flex items-center gap-2 rounded-xl bg-[#1d4b39] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#163e2f]"
                           >
                             <FiCheck className="h-4 w-4" />
@@ -251,7 +259,8 @@ function AdminDashboard() {
                           <button
                             type="button"
                             onClick={() => handleDecision(selectedArticle._id, "REQUEST_CHANGES")}
-                            className="inline-flex items-center gap-2 rounded-xl border border-[#d9c5bc] bg-[#fffaf7] px-4 py-2.5 text-sm font-semibold text-[#8b3c2b] transition hover:bg-[#fff2ee]"
+                            disabled={reviewing}
+                            className="inline-flex items-center gap-2 rounded-xl border border-[#d9c5bc] bg-[#fffaf7] px-4 py-2.5 text-sm font-semibold text-[#8b3c2b] transition hover:bg-[#fff2ee] disabled:opacity-60"
                           >
                             <FiX className="h-4 w-4" />
                             Request Changes
@@ -260,7 +269,8 @@ function AdminDashboard() {
                           <button
                             type="button"
                             onClick={() => handleDecision(selectedArticle._id, "REJECT")}
-                            className="inline-flex items-center gap-2 rounded-xl border border-[#d9c5bc] bg-[#fffaf7] px-4 py-2.5 text-sm font-semibold text-[#8b3c2b] transition hover:bg-[#fff2ee]"
+                            disabled={reviewing}
+                            className="inline-flex items-center gap-2 rounded-xl border border-[#d9c5bc] bg-[#fffaf7] px-4 py-2.5 text-sm font-semibold text-[#8b3c2b] transition hover:bg-[#fff2ee] disabled:opacity-60"
                           >
                             <FiX className="h-4 w-4" />
                             Reject Article

@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import { FiEye } from "react-icons/fi";
 
 export default function FeaturedHeroCard({ article }) {
-  const DEFAULT_COVER_IMAGE =
-    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80";
   if (!article) return null;
 
   return (
@@ -14,11 +12,9 @@ export default function FeaturedHeroCard({ article }) {
     >
       <div className="relative w-full rounded-2xl overflow-hidden min-h-[360px] md:min-h-[420px] flex items-end p-6 md:p-10 shadow-sm hover:shadow-md transition-shadow">
         {/* Background Image */}
-        <img
-          src={article.coverImage || DEFAULT_COVER_IMAGE}
-          alt={article.title}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-[1.02]"
-        />
+        {article.coverImage ? (
+          <img src={article.coverImage} alt={article.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-[1.02]" />
+        ) : null}
 
         {/* Dark Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />

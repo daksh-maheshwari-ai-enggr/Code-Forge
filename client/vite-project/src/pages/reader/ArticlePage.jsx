@@ -11,8 +11,29 @@ import {
 import Navbar from "../../components/Navbar";
 import { getArticleById } from "../../services/api";
 
-const DEFAULT_COVER_IMAGE =
-  "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80";
+const renderInlineMarkdown = (text) =>
+  text.split(/(\*\*[^*]+\*\*)/g).map((part, index) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={index}>{part.slice(2, -2)}</strong>
+    ) : (
+      part
+    ),
+  );
+
+const renderArticleContent = (content = "") =>
+  content.split("\n").map((line, index) => {
+    const trimmedLine = line.trim();
+    const key = `${index}-${line}`;
+
+    if (trimmedLine.startsWith("### ")) {
+      return <h3 key={key} className="mt-7 text-2xl font-bold text-stone-900">{renderInlineMarkdown(trimmedLine.slice(4))}</h3>;
+    }
+    if (trimmedLine.startsWith("## ") || trimmedLine.startsWith("# ")) {
+      const heading = trimmedLine.startsWith("## ") ? trimmedLine.slice(3) : trimmedLine.slice(2);
+      return <h2 key={key} className="mt-8 text-3xl font-bold text-stone-900">{renderInlineMarkdown(heading)}</h2>;
+    }
+    return <p key={key} className={trimmedLine ? "min-h-[1.95em]" : "h-4"}>{renderInlineMarkdown(line)}</p>;
+  });
 
 export default function ArticlePage() {
   const { id } = useParams();
@@ -196,11 +217,13 @@ export default function ArticlePage() {
         {/* ==================== HERO IMAGE ==================== */}
         <section className="mx-auto max-w-[1008px] px-6">
 
-          <img
-            src={DEFAULT_COVER_IMAGE}
-            alt={article.title}
-            className="h-[430px] w-full rounded-2xl object-cover md:h-[500px] lg:h-[520px]"
-          />
+          {article.coverImage ? (
+            <img
+              src={article.coverImage}
+              alt={article.title}
+              className="h-[430px] w-full rounded-2xl object-cover md:h-[500px] lg:h-[520px]"
+            />
+          ) : null}
 
         </section>
 
@@ -210,9 +233,7 @@ export default function ArticlePage() {
           <div className="max-w-[900px] text-[17px] leading-[1.95] text-stone-700 md:text-[18px]">
 
             {/* Real article content from MongoDB */}
-            <div className="whitespace-pre-line">
-              {article.content}
-            </div>
+            <div>{renderArticleContent(article.content)}</div>
 
           </div>
 

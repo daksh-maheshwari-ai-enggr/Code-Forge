@@ -19,9 +19,6 @@ const statusLabels = {
   REJECTED: "Rejected",
 };
 
-const fallbackAvatar =
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80";
-
 export default function Profile() {
   const { user } = useAuth();
   const [articles, setArticles] = useState([]);
@@ -35,7 +32,10 @@ export default function Profile() {
 
       try {
         const response = await getMyArticles(token);
-        setArticles(response.data || []);
+        const uniqueArticles = Array.from(
+          new Map((response.data || []).map((article) => [article._id, article])).values(),
+        );
+        setArticles(uniqueArticles);
       } catch (error) {
         console.error("Failed to load profile data:", error);
       } finally {
@@ -60,11 +60,13 @@ export default function Profile() {
         <div className="mx-auto max-w-5xl">
           <div className="mb-8 rounded-[22px] border border-[#d9d0c2] bg-[#f7f4ef] p-8 shadow-sm">
             <div className="flex flex-col gap-6 md:flex-row md:items-center">
-              <img
-                src={user.avatarUrl || fallbackAvatar}
-                alt={user.name}
-                className="h-28 w-28 rounded-full object-cover ring-4 ring-[#e9e1d9]"
-              />
+              {user.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  className="h-28 w-28 rounded-full object-cover ring-4 ring-[#e9e1d9]"
+                />
+              ) : null}
 
               <div className="flex-1">
                 <h1 className="font-serif text-4xl font-black tracking-[-0.04em] text-[#1d201d]">
@@ -122,11 +124,13 @@ export default function Profile() {
                   className="flex flex-col gap-4 rounded-[18px] border border-[#d6cfc4] bg-[#f7f4ef] px-5 py-5 md:flex-row md:items-center md:justify-between"
                 >
                   <div className="flex items-center gap-4">
-                    <img
-                      src={article.coverImage || fallbackAvatar}
-                      alt={article.title}
-                      className="h-16 w-16 rounded-xl object-cover"
-                    />
+                    {article.coverImage ? (
+                      <img
+                        src={article.coverImage}
+                        alt={article.title}
+                        className="h-16 w-16 rounded-xl object-cover"
+                      />
+                    ) : null}
 
                     <div>
                       <h3 className="font-serif text-2xl font-semibold tracking-[-0.03em] text-[#1d201d]">

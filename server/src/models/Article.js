@@ -30,6 +30,12 @@ const articleSchema = new mongoose.Schema(
       required: true,
     },
 
+    coverImage: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     status: {
       type: String,
       enum: [
