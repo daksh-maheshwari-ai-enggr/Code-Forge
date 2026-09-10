@@ -6,6 +6,8 @@ import Register from "../pages/auth/Register";
 import HomePage from "../pages/reader/HomePage";
 import BrowsePage from "../pages/reader/BrowsePage";
 
+import Chat from "../pages/Chat";
+
 import Unauthorized from "../pages/Unauthorized";
 
 import ProtectedRoute from "../components/auth/ProtectedRoute";
@@ -32,6 +34,15 @@ function AppRoutes() {
         <Route path="/read/:id" element={<ArticlePage />} />
         <Route path="/read/:id/quiz" element={<QuizPage />} />
         <Route path="/read/:id/result" element={<QuizResultPage />} />
+
+        <Route
+          path="/chat"
+          element={
+            <RoleRoute allowedRoles={["AUTHOR", "ADMIN"]}>
+              <Chat />
+            </RoleRoute>
+        }
+        />
 
         {/* Authentication */}
         <Route path="/login" element={<Login />} />
