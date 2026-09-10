@@ -7,6 +7,7 @@ import {
   FiEdit3,
   FiUser,
   FiBell,
+  FiMessageCircle,
 } from "react-icons/fi";
 
 export default function Navbar() {
@@ -61,6 +62,7 @@ export default function Navbar() {
 
   const handleLogin = () => navigate("/login");
   const handleNotifications = () => navigate("/notifications");
+  const handleChat = () => navigate("/chat");
 
   const handleLogout = () => {
     logout();
@@ -133,6 +135,18 @@ export default function Navbar() {
                 Logout
               </button>
             </>
+          )}
+
+          {/* CHAT ICON - ONLY ADDITION */}
+          {user && (
+            <button
+              type="button"
+              onClick={handleChat}
+              aria-label="Chat"
+              className="relative flex h-9 w-9 items-center justify-center rounded-full text-stone-500 transition hover:bg-stone-200/60 hover:text-stone-800"
+            >
+              <FiMessageCircle className="h-[19px] w-[19px]" />
+            </button>
           )}
 
           {user && user.role === "AUTHOR" && (
