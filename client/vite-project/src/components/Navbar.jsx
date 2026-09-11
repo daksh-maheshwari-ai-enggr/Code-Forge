@@ -1,5 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { getNotifications } from "../services/api";
 import {
   FiBookOpen,
   FiGrid,
@@ -15,6 +17,20 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+  useEffect(() => {
+    if (!user) { setUnreadNotifications(0); return; }
+    const loadUnread = async () => {
+      try {
+        const response = await getNotifications(localStorage.getItem("authToken"));
+        setUnreadNotifications((response.data || []).filter((item) => item.unread).length);
+      } catch { setUnreadNotifications(0); }
+    };
+    loadUnread();
+    window.addEventListener("notifications-read", loadUnread);
+    return () => window.removeEventListener("notifications-read", loadUnread);
+  }, [user, location.pathname]);
 
   const initials = user?.name
     ?.split(" ")
@@ -157,7 +173,7 @@ export default function Navbar() {
               className="relative flex h-9 w-9 items-center justify-center rounded-full text-stone-500 transition hover:bg-stone-200/60 hover:text-stone-800"
             >
               <FiBell className="h-[19px] w-[19px]" />
-              <span className="absolute right-[5px] top-[4px] h-2 w-2 rounded-full bg-[#C47D32]" />
+              {unreadNotifications > 0 && <span className="absolute right-[5px] top-[4px] h-2 w-2 rounded-full bg-[#C47D32]" />}
             </button>
           )}
           {user && user.role === "AUTHOR" && (

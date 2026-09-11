@@ -53,6 +53,8 @@ const articleSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+    views: { type: Number, default: 0 },
+    likes: { type: Number, default: 0 },
   },
   {
     timestamps: true,

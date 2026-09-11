@@ -8,7 +8,7 @@ router.get("/", authMiddleware, async (req, res) => {
   try {
     const notifications = await Notification.find({ user: req.user.userId })
       .sort({ createdAt: -1 })
-      .populate("article", "title");
+      .populate({ path: "article", select: "title author", populate: { path: "author", select: "name" } });
 
     const formatted = notifications.map((notification) => ({
       id: notification._id,
@@ -22,6 +22,7 @@ router.get("/", authMiddleware, async (req, res) => {
               ? "new_article"
               : "rejected",
       articleName: notification.article?.title || "Your article",
+      authorName: notification.article?.author?.name || "",
       reason: notification.reason || "",
       time: formatRelativeTime(notification.createdAt),
       unread: notification.unread,
@@ -55,6 +56,15 @@ router.patch("/read-all", authMiddleware, async (req, res) => {
       success: false,
       message: "Unable to update notifications",
     });
+  }
+});
+
+router.patch("/:id/read", authMiddleware, async (req, res) => {
+  try {
+    await Notification.updateOne({ _id: req.params.id, user: req.user.userId }, { $set: { unread: false } });
+    res.status(200).json({ success: true });
+  } catch {
+    res.status(500).json({ success: false, message: "Unable to update notification" });
   }
 });
 

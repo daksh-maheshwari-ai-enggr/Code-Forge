@@ -9,6 +9,8 @@ import {
 } from "../services/article.service.js";
 import Notification from "../models/Notification.js";
 import Subscription from "../models/Subscription.js";
+import Article from "../models/Article.js";
+import ArticleLike from "../models/ArticleLike.js";
 
 export const createArticle = async (req, res, next) => {
   try {
@@ -55,7 +57,11 @@ export const getArticles = async (req, res, next) => {
 
 export const getArticleById = async (req, res, next) => {
   try {
-    const article = await getArticleByIdService(req.params.id);
+    const article = await Article.findOneAndUpdate(
+      { _id: req.params.id, status: "PUBLISHED" },
+      { $inc: { views: 1 } },
+      { new: true },
+    ).populate("author", "name");
 
     if (!article) {
       return res.status(404).json({
@@ -71,6 +77,33 @@ export const getArticleById = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const getLikeStatus = async (req, res, next) => {
+  try {
+    const liked = await ArticleLike.exists({ article: req.params.id, user: req.user.userId });
+    res.json({ success: true, data: { liked: Boolean(liked) } });
+  } catch (error) { next(error); }
+};
+
+export const toggleLike = async (req, res, next) => {
+  try {
+    const existing = await ArticleLike.findOne({ article: req.params.id, user: req.user.userId });
+    let liked;
+    if (existing) {
+      await existing.deleteOne();
+      await Article.updateOne({ _id: req.params.id, likes: { $gt: 0 } }, { $inc: { likes: -1 } });
+      liked = false;
+    } else {
+      const article = await Article.findOne({ _id: req.params.id, status: "PUBLISHED" });
+      if (!article) return res.status(404).json({ success: false, message: "Article not found" });
+      await ArticleLike.create({ article: article._id, user: req.user.userId });
+      await Article.updateOne({ _id: article._id }, { $inc: { likes: 1 } });
+      liked = true;
+    }
+    const article = await Article.findById(req.params.id).select("likes");
+    res.json({ success: true, data: { liked, likes: article.likes } });
+  } catch (error) { next(error); }
 };
 
 export const getMyArticles = async (req, res, next) => {

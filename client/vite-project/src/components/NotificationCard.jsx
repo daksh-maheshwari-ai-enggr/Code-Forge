@@ -68,6 +68,7 @@ function NotificationIcon({ type }) {
 export default function NotificationCard({
   type,
   articleName,
+  authorName,
   reason,
   time,
   unread,
@@ -104,7 +105,7 @@ export default function NotificationCard({
         );
 
       case "new_article":
-        return <>A new article, <strong>"{articleName}"</strong>, has been published by an author you subscribe to.</>;
+        return <><strong>{authorName || "An author you follow"}</strong> published a new article: <strong>"{articleName}"</strong>.</>;
 
       default:
         return null;

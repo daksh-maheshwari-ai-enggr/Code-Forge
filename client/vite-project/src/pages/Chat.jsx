@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   FiCheck,
@@ -14,6 +14,7 @@ import {
   getChatMessages,
   getChatUsers,
   sendChatMessage,
+  markChatMessagesRead,
 } from "../services/chat";
 
 export default function Chat() {
@@ -21,6 +22,7 @@ export default function Chat() {
   const [searchParams] = useSearchParams();
 
   const [users, setUsers] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [search, setSearch] = useState("");
@@ -64,7 +66,7 @@ export default function Chat() {
 
         if (data.length > 0) {
           const requestedUser = data.find((item) => String(item._id) === searchParams.get("user"));
-          setSelectedUser((current) => current || requestedUser || data[0]);
+          setSelectedUser((current) => current || requestedUser || null);
         }
       } catch (err) {
         if (mounted) {
@@ -83,6 +85,21 @@ export default function Chat() {
       mounted = false;
     };
   }, [token, user, searchParams]);
+
+  useEffect(() => {
+    const value = search.trim();
+    if (!value || !token) { setSearchResults([]); return; }
+    const timeout = setTimeout(async () => {
+      try { setSearchResults(await getChatUsers(token, value)); } catch { setSearchResults([]); }
+    }, 250);
+    return () => clearTimeout(timeout);
+  }, [search, token]);
+
+  useEffect(() => {
+    const requestedUserId = searchParams.get("user");
+    if (!requestedUserId || !token || selectedUser) return;
+    getChatMessages(token, requestedUserId).then((data) => setSelectedUser(data.user)).catch(() => {});
+  }, [searchParams, token, selectedUser]);
 
   // ---------------------------------------------------------
   // SOCKET CONNECTION
@@ -119,7 +136,16 @@ export default function Chat() {
         (senderId === loggedInUserId &&
           receiverId === currentConversationUserId);
 
-      if (!belongsToCurrentConversation) return;
+      if (!belongsToCurrentConversation) {
+        const sender = message.sender;
+        if (senderId !== String(user.id || user._id)) {
+          setUsers((current) => {
+            const withoutSender = current.filter((item) => String(item._id) !== senderId);
+            return [{ ...sender, unreadCount: (current.find((item) => String(item._id) === senderId)?.unreadCount || 0) + 1, lastMessage: message.content, lastMessageAt: message.createdAt }, ...withoutSender];
+          });
+        }
+        return;
+      }
 
       setMessages((current) => {
         const exists = current.some(
@@ -130,6 +156,13 @@ export default function Chat() {
 
         return [...current, message];
       });
+      if (senderId !== String(user.id || user._id)) markChatMessagesRead(socket, senderId);
+    });
+
+    socket.on("messages_read", ({ readerId }) => {
+      if (String(readerId) === String(selectedUserRef.current?._id)) {
+        setMessages((current) => current.map((message) => String(message.sender?._id || message.sender) === String(user.id || user._id) ? { ...message, read: true } : message));
+      }
     });
 
     socket.on("message_sent", (message) => {
@@ -189,6 +222,8 @@ export default function Chat() {
         if (!mounted) return;
 
         const fetchedMessages = data.messages || [];
+        if (socketRef.current?.connected) markChatMessagesRead(socketRef.current, selectedUser._id);
+        setUsers((current) => current.map((item) => String(item._id) === selectedUserId ? { ...item, unreadCount: 0 } : item));
 
         setMessages((currentMessages) => {
           const currentConversationMessages =
@@ -277,17 +312,14 @@ export default function Chat() {
   // ---------------------------------------------------------
   // FILTER USERS
   // ---------------------------------------------------------
-  const filteredUsers = useMemo(() => {
-    const value = search.trim().toLowerCase();
+  const filteredUsers = search.trim() ? searchResults : users;
 
-    if (!value) return users;
-
-    return users.filter(
-      (item) =>
-        item.name?.toLowerCase().includes(value) ||
-        item.email?.toLowerCase().includes(value),
-    );
-  }, [users, search]);
+  const openConversation = (item) => {
+    localMessageIdsRef.current.clear();
+    setSelectedUser(item);
+    setMessages([]);
+    setSearch("");
+  };
 
   // ---------------------------------------------------------
   // TIME FORMAT
@@ -343,6 +375,10 @@ export default function Chat() {
       });
 
       setMessageText("");
+      setUsers((current) => {
+        const withoutSelected = current.filter((item) => String(item._id) !== String(selectedUser._id));
+        return [{ ...selectedUser, unreadCount: 0, lastMessage: sentMessage.content, lastMessageAt: sentMessage.createdAt }, ...withoutSelected];
+      });
     } catch (err) {
       setError(err.message || "Unable to send message");
     }
@@ -428,11 +464,7 @@ export default function Chat() {
                     <button
                       key={item._id}
                       type="button"
-                      onClick={() => {
-                        localMessageIdsRef.current.clear();
-                        setSelectedUser(item);
-                        setMessages([]);
-                      }}
+                      onClick={() => openConversation(item)}
                       className={`flex w-full items-center gap-3 rounded-xl p-3 text-left transition ${
                         active
                           ? "bg-[#EAF0EB]"
@@ -451,15 +483,14 @@ export default function Chat() {
                         </div>
                       )}
 
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold text-stone-900">
                           {item.name}
                         </p>
 
-                        <p className="truncate text-xs text-stone-400">
-                          {item.role}
-                        </p>
+                        <p className="truncate text-xs text-stone-400">{item.lastMessage || item.role}</p>
                       </div>
+                      {item.unreadCount > 0 && <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#C9792B] px-1 text-[10px] font-bold text-white">{item.unreadCount > 99 ? "99+" : item.unreadCount}</span>}
                     </button>
                   );
                 })
@@ -622,7 +653,7 @@ export default function Chat() {
                                     )}
                                   </span>
 
-                                  <FiCheck className="h-3 w-3 text-[#C8D7CE]" />
+                                  {message.read ? <span className="text-xs leading-none text-[#55B8F7]">✓✓</span> : <FiCheck className="h-3 w-3 text-[#C8D7CE]" />}
                                 </div>
                               </div>
                             </div>

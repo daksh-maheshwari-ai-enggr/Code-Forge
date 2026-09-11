@@ -8,6 +8,8 @@ import {
   getPendingArticles,
   reviewArticle,
   editArticle,
+  getLikeStatus,
+  toggleLike,
 } from "../controllers/article.controller.js";
 import { createComment, getComments } from "../controllers/comment.controller.js";
 
@@ -21,6 +23,8 @@ router.get("/mine", authMiddleware, getMyArticles);
 router.get("/", getArticles);
 router.get("/:id/comments", getComments);
 router.post("/:id/comments", authMiddleware, createComment);
+router.get("/:id/like", authMiddleware, getLikeStatus);
+router.post("/:id/like", authMiddleware, toggleLike);
 router.patch("/:id", authMiddleware, editArticle);
 router.patch("/:id/review", authMiddleware, reviewArticle);
 router.get("/:id", getArticleById);

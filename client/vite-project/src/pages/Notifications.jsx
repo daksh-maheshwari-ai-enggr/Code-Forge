@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import NotificationCard from "../components/NotificationCard";
-import { getNotifications, markNotificationsRead } from "../services/api";
+import { getNotifications, markNotificationRead, markNotificationsRead } from "../services/api";
 
 export default function Notifications() {
   const navigate = useNavigate();
@@ -33,6 +33,7 @@ export default function Notifications() {
 
     try {
       await markNotificationsRead(token);
+      window.dispatchEvent(new Event("notifications-read"));
       setNotifications((current) =>
         current.map((notification) => ({ ...notification, unread: false }))
       );
@@ -41,12 +42,14 @@ export default function Notifications() {
     }
   };
 
-  const markAsRead = (id) => {
+  const markAsRead = async (id) => {
+    try { await markNotificationRead(id, localStorage.getItem("authToken")); } catch { /* keep navigation responsive if persistence fails */ }
     setNotifications((currentNotifications) =>
       currentNotifications.map((notification) =>
         notification.id === id ? { ...notification, unread: false } : notification
       )
     );
+    window.dispatchEvent(new Event("notifications-read"));
   };
 
   return (
@@ -93,6 +96,7 @@ export default function Notifications() {
                 key={notification.id}
                 type={notification.type}
                 articleName={notification.articleName}
+                authorName={notification.authorName}
                 reason={notification.reason}
                 time={notification.time}
                 unread={notification.unread}

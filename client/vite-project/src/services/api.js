@@ -15,6 +15,9 @@ const getArticleById = async (id) => {
   return response.data;
 };
 
+const getLikeStatus = async (articleId, token) => request(`/articles/${articleId}/like`, { headers: { Authorization: `Bearer ${token}` } });
+const toggleArticleLike = async (articleId, token) => request(`/articles/${articleId}/like`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+
 const request = async (endpoint, options = {}) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
@@ -147,6 +150,8 @@ const markNotificationsRead = async (token) => {
   return response.data;
 };
 
+const markNotificationRead = async (notificationId, token) => request(`/notifications/${notificationId}/read`, { method: "PATCH", headers: { Authorization: `Bearer ${token}` } });
+
 const createArticleQuiz = async (articleId, quizData, token) => {
   const response = await api.post(
     `/articles/${articleId}/quiz`,
@@ -168,6 +173,8 @@ export {
   getCurrentUser,
   getArticles,
   getArticleById,
+  getLikeStatus,
+  toggleArticleLike,
   getArticleQuiz,
   getComments,
   createComment,
@@ -180,5 +187,6 @@ export {
   reviewArticle,
   getNotifications,
   markNotificationsRead,
+  markNotificationRead,
   createArticleQuiz,
 };

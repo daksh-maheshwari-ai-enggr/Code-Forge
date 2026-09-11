@@ -3,8 +3,9 @@ import { io } from "socket.io-client";
 const API_BASE_URL = "http://localhost:5004/api";
 const SOCKET_URL = "http://localhost:5004";
 
-export async function getChatUsers(token) {
-  const response = await fetch(`${API_BASE_URL}/chat/users`, {
+export async function getChatUsers(token, search = "") {
+  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+  const response = await fetch(`${API_BASE_URL}/chat/users${query}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -67,5 +68,11 @@ export function sendChatMessage(socket, receiverId, content) {
         }
       }
     );
+  });
+}
+
+export function markChatMessagesRead(socket, senderId) {
+  return new Promise((resolve) => {
+    socket.emit("mark_messages_read", { senderId }, () => resolve());
   });
 }

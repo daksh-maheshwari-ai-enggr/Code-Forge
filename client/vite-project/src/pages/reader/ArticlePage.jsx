@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   FiArrowLeft,
   FiEye,
@@ -9,7 +9,8 @@ import {
 } from "react-icons/fi";
 
 import Navbar from "../../components/Navbar";
-import { getArticleById } from "../../services/api";
+import { getArticleById, getLikeStatus, toggleArticleLike } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 import CommentSection from "../../components/CommentSection";
 
 const renderInlineMarkdown = (text) =>
@@ -38,10 +39,13 @@ const renderArticleContent = (content = "") =>
 
 export default function ArticlePage() {
   const { id } = useParams();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -62,6 +66,22 @@ export default function ArticlePage() {
 
     fetchArticle();
   }, [id]);
+
+  useEffect(() => {
+    if (!isAuthenticated) { setLiked(false); return; }
+    getLikeStatus(id, localStorage.getItem("authToken"))
+      .then((response) => setLiked(response.data.liked))
+      .catch(() => setLiked(false));
+  }, [id, isAuthenticated]);
+
+  const handleLike = async () => {
+    if (!isAuthenticated) { navigate("/login", { state: { from: `/read/${id}` } }); return; }
+    try {
+      const response = await toggleArticleLike(id, localStorage.getItem("authToken"));
+      setLiked(response.data.liked);
+      setArticle((current) => ({ ...current, likes: response.data.likes }));
+    } catch (err) { console.error("Failed to update like:", err); }
+  };
 
   const getInitials = (name = "") => {
     return name
@@ -195,17 +215,15 @@ export default function ArticlePage() {
 
             <div className="flex shrink-0 items-center gap-5 text-[13px] text-stone-500">
 
-              {/* Temporary hardcoded views */}
               <span className="flex items-center gap-1.5">
                 <FiEye className="h-4 w-4" />
-                0
+                {article.views || 0}
               </span>
 
-              {/* Temporary hardcoded likes */}
-              <span className="flex items-center gap-1.5">
+              <button type="button" onClick={handleLike} className={`flex items-center gap-1.5 transition ${liked ? "text-[#C9792B]" : "hover:text-[#1B3B2B]"}`} aria-label="Like this article">
                 <FiThumbsUp className="h-4 w-4" />
-                0
-              </span>
+                {article.likes || 0}
+              </button>
 
             </div>
 

@@ -98,6 +98,8 @@ export default function registerChatSocket(io) {
           }
         );
 
+        io.to(`user:${senderId}`).emit("messages_read", { readerId: socket.userId });
+
         callback?.({
           success: true,
         });
