@@ -4,6 +4,7 @@ import { FiArrowLeft, FiCheck } from "react-icons/fi";
 
 import Navbar from "../../components/Navbar";
 import { getArticleQuiz } from "../../services/api";
+import CommentSection from "../../components/CommentSection";
 
 export default function QuizPage() {
   const { id } = useParams();
@@ -218,6 +219,7 @@ export default function QuizPage() {
               ? "Submit Quiz"
               : "Next Question"}
           </button>
+          <CommentSection articleId={id} context="QUIZ" />
         </section>
       </main>
     </>

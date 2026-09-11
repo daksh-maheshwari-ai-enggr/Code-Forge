@@ -61,6 +61,36 @@ const getArticleQuiz = async (articleId) => {
   return response.data;
 };
 
+const getComments = async (articleId, context = "ARTICLE") => {
+  const response = await api.get(`/articles/${articleId}/comments`, { params: { context } });
+  return response.data;
+};
+
+const createComment = async (articleId, content, token, parentId = null, context = "ARTICLE") => {
+  return request(`/articles/${articleId}/comments`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ content, parentId, context }),
+  });
+};
+
+const getPublicProfile = async (userId) => {
+  const response = await api.get(`/users/${userId}`);
+  return response.data;
+};
+
+const getSubscriptionStatus = async (userId, token) => {
+  return request(`/users/${userId}/subscription`, { headers: { Authorization: `Bearer ${token}` } });
+};
+
+const subscribeToUser = async (userId, token) => {
+  return request(`/users/${userId}/subscribe`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+};
+
+const unsubscribeFromUser = async (userId, token) => {
+  return request(`/users/${userId}/subscribe`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+};
+
 const getMyArticles = async (token) => {
   const response = await api.get("/articles/mine", {
     headers: {
@@ -139,6 +169,12 @@ export {
   getArticles,
   getArticleById,
   getArticleQuiz,
+  getComments,
+  createComment,
+  getPublicProfile,
+  getSubscriptionStatus,
+  subscribeToUser,
+  unsubscribeFromUser,
   getMyArticles,
   getPendingArticles,
   reviewArticle,

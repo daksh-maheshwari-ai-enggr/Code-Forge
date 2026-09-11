@@ -1,0 +1,19 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { FiMessageCircle, FiUserPlus } from "react-icons/fi";
+import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
+import { getPublicProfile, getSubscriptionStatus, subscribeToUser, unsubscribeFromUser } from "../services/api";
+
+export default function PublicProfile() {
+  const { id } = useParams(); const { user, isAuthenticated } = useAuth(); const navigate = useNavigate();
+  const [profile, setProfile] = useState(null); const [subscribed, setSubscribed] = useState(false); const [loading, setLoading] = useState(true);
+  useEffect(() => { (async () => { try { const result = await getPublicProfile(id); setProfile(result.data); if (isAuthenticated && String(user?.id || user?._id) !== id) { const status = await getSubscriptionStatus(id, localStorage.getItem("authToken")); setSubscribed(status.data.subscribed); } } finally { setLoading(false); } })(); }, [id, isAuthenticated, user]);
+  const requireLogin = () => { if (!isAuthenticated) { navigate("/login", { state: { from: `/profile/${id}` } }); return true; } return false; };
+  const toggleSubscription = async () => { if (requireLogin()) return; const token = localStorage.getItem("authToken"); if (subscribed) await unsubscribeFromUser(id, token); else await subscribeToUser(id, token); setSubscribed(!subscribed); };
+  const message = () => { if (requireLogin()) return; navigate(`/chat?user=${id}`); };
+  if (loading) return <><Navbar /><main className="p-16 text-center">Loading profile...</main></>;
+  if (!profile) return <><Navbar /><main className="p-16 text-center">Profile not found.</main></>;
+  const isOwnProfile = String(user?.id || user?._id) === id;
+  return <><Navbar /><main className="min-h-screen bg-[#f5f1e8] px-5 py-8 text-[#1d201d]"><div className="mx-auto max-w-5xl"><section className="rounded-[22px] border border-[#d9d0c2] bg-[#f7f4ef] p-8"><div className="flex flex-col gap-5 sm:flex-row sm:items-center">{profile.user.avatarUrl ? <img src={profile.user.avatarUrl} alt="" className="h-24 w-24 rounded-full object-cover" /> : <span className="flex h-24 w-24 items-center justify-center rounded-full bg-[#1B3B2B] text-2xl font-bold text-white">{profile.user.name?.slice(0, 1)}</span>}<div className="flex-1"><h1 className="font-serif text-4xl font-black">{profile.user.name}</h1><p className="mt-2 text-[#554f48]">{profile.user.bio || "No bio yet."}</p><p className="mt-3 text-sm text-stone-500">{profile.subscriberCount} subscriber{profile.subscriberCount === 1 ? "" : "s"} · {profile.articles.length} article{profile.articles.length === 1 ? "" : "s"}</p></div>{!isOwnProfile && <div className="flex gap-3"><button onClick={toggleSubscription} className="inline-flex items-center gap-2 rounded-xl bg-[#1B3B2B] px-4 py-2.5 text-sm font-semibold text-white"><FiUserPlus />{subscribed ? "Subscribed" : "Subscribe"}</button><button onClick={message} className="inline-flex items-center gap-2 rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold"><FiMessageCircle />Message</button></div>}</div></section><h2 className="mt-10 font-serif text-3xl font-bold">Published articles</h2><div className="mt-5 space-y-3">{profile.articles.map((article) => <Link key={article._id} to={`/read/${article._id}`} className="block rounded-xl border border-[#d9d0c2] bg-white p-5 hover:border-[#1B3B2B]"><p className="text-xs font-semibold uppercase text-[#C9792B]">{article.category}</p><h3 className="mt-1 text-xl font-bold">{article.title}</h3><p className="mt-2 text-sm text-stone-500">{new Date(article.createdAt).toLocaleDateString()}</p></Link>)}{!profile.articles.length && <p className="text-stone-500">No published articles yet.</p>}</div></div></main></>;
+}

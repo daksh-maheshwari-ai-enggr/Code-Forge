@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -52,7 +53,9 @@ function Login() {
 
       login(user);
 
-      if (user.role === "ADMIN") {
+      if (location.state?.from) {
+        navigate(location.state.from);
+      } else if (user.role === "ADMIN") {
         navigate("/admin/dashboard");
       } else {
         navigate("/");

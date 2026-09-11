@@ -10,6 +10,7 @@ import {
 
 import Navbar from "../../components/Navbar";
 import { getArticleById } from "../../services/api";
+import CommentSection from "../../components/CommentSection";
 
 const renderInlineMarkdown = (text) =>
   text.split(/(\*\*[^*]+\*\*)/g).map((part, index) =>
@@ -182,9 +183,7 @@ export default function ArticlePage() {
 
               <div className="min-w-0">
 
-                <p className="text-[14px] font-semibold text-stone-900">
-                  {authorName}
-                </p>
+                <Link to={`/profile/${article.author?._id}`} className="text-[14px] font-semibold text-stone-900 hover:underline">{authorName}</Link>
 
                 <p className="mt-0.5 text-[12px] leading-5 text-stone-500">
                   Author
@@ -275,6 +274,8 @@ export default function ArticlePage() {
             </Link>
 
           </section>
+
+          <CommentSection articleId={article._id} />
 
         </article>
 

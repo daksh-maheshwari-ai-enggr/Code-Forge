@@ -8,6 +8,7 @@ import {
   updateArticleService,
 } from "../services/article.service.js";
 import Notification from "../models/Notification.js";
+import Subscription from "../models/Subscription.js";
 
 export const createArticle = async (req, res, next) => {
   try {
@@ -131,6 +132,7 @@ export const reviewArticle = async (req, res, next) => {
           ? "REJECTED"
           : "CHANGES_REQUESTED";
 
+    const articleBeforeReview = await getArticleByIdService(req.params.id);
     const article = await updateArticleStatusService({
       articleId: req.params.id,
       status: finalStatus,
@@ -157,6 +159,21 @@ export const reviewArticle = async (req, res, next) => {
             : `Changes were requested for "${article.title}".`,
       unread: true,
     });
+
+    if (action === "APPROVE" && articleBeforeReview?.status !== "PUBLISHED") {
+      const subscriptions = await Subscription.find({ author: article.author }).select("subscriber");
+      if (subscriptions.length) {
+        await Notification.insertMany(
+          subscriptions.map(({ subscriber }) => ({
+            user: subscriber,
+            article: article._id,
+            type: "NEW_ARTICLE",
+            message: `${article.title} was just published.`,
+            unread: true,
+          })),
+        );
+      }
+    }
 
     res.status(200).json({
       success: true,

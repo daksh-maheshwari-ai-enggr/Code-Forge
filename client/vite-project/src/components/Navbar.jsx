@@ -149,7 +149,7 @@ export default function Navbar() {
             </button>
           )}
 
-          {user && user.role === "AUTHOR" && (
+          {user && (
             <button
               type="button"
               onClick={handleNotifications}

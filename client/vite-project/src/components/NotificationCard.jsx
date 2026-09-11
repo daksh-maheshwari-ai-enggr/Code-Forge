@@ -1,4 +1,11 @@
 function NotificationIcon({ type }) {
+  if (type === "new_article") {
+    return (
+      <div className="w-10 h-10 min-w-10 flex items-center justify-center rounded-full bg-[#e3e1db] mt-px text-[#1b6a46]">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+      </div>
+    );
+  }
   if (type === "approved") {
     return (
       <div className="w-10 h-10 min-w-10 flex items-center justify-center rounded-full bg-[#e3e1db] mt-px text-[#00aa83]">
@@ -95,6 +102,9 @@ export default function NotificationCard({
             Your article <strong>"{articleName}"</strong> has been rejected.
           </>
         );
+
+      case "new_article":
+        return <>A new article, <strong>"{articleName}"</strong>, has been published by an author you subscribe to.</>;
 
       default:
         return null;

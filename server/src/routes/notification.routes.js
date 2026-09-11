@@ -18,7 +18,9 @@ router.get("/", authMiddleware, async (req, res) => {
           ? "approved"
           : notification.type === "CHANGES_REQUESTED"
             ? "changes"
-            : "rejected",
+            : notification.type === "NEW_ARTICLE"
+              ? "new_article"
+              : "rejected",
       articleName: notification.article?.title || "Your article",
       reason: notification.reason || "",
       time: formatRelativeTime(notification.createdAt),

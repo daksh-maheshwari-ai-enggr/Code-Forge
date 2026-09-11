@@ -100,6 +100,8 @@ export default function Notifications() {
                   markAsRead(notification.id);
                   if (notification.type === "changes" && notification.articleId) {
                     navigate(`/author/articles/${notification.articleId}/edit`);
+                  } else if (notification.type === "new_article" && notification.articleId) {
+                    navigate(`/read/${notification.articleId}`);
                   }
                 }}
               />

@@ -23,6 +23,7 @@ import ArticlePage from "../pages/reader/ArticlePage";
 import QuizPage from "../pages/reader/QuizPage";
 import QuizResultPage from "../pages/reader/QuizResultPage";
 import Notifications from "../pages/Notifications";
+import PublicProfile from "../pages/PublicProfile";
 
 function AppRoutes() {
   return (
@@ -34,6 +35,7 @@ function AppRoutes() {
         <Route path="/read/:id" element={<ArticlePage />} />
         <Route path="/read/:id/quiz" element={<QuizPage />} />
         <Route path="/read/:id/result" element={<QuizResultPage />} />
+        <Route path="/profile/:id" element={<PublicProfile />} />
 
         <Route
           path="/chat"
@@ -80,14 +82,7 @@ function AppRoutes() {
           }
         />
 
-        <Route
-          path="/profile"
-          element={
-            <RoleRoute allowedRoles={["AUTHOR"]}>
-              <Profile />
-            </RoleRoute>
-          }
-        />
+        <Route path="/profile" element={<Profile />} />
 
         <Route
           path="/author/articles/:id/edit"
@@ -101,9 +96,9 @@ function AppRoutes() {
         <Route
           path="/notifications"
           element={
-            <RoleRoute allowedRoles={["AUTHOR"]}>
+            <ProtectedRoute>
               <Notifications />
-            </RoleRoute>
+            </ProtectedRoute>
           }
         />
       </Routes>

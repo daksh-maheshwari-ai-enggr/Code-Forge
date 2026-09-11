@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   FiCheck,
   FiMessageCircle,
@@ -17,6 +18,7 @@ import {
 
 export default function Chat() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
 
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -61,7 +63,8 @@ export default function Chat() {
         setUsers(data);
 
         if (data.length > 0) {
-          setSelectedUser((current) => current || data[0]);
+          const requestedUser = data.find((item) => String(item._id) === searchParams.get("user"));
+          setSelectedUser((current) => current || requestedUser || data[0]);
         }
       } catch (err) {
         if (mounted) {
@@ -79,7 +82,7 @@ export default function Chat() {
     return () => {
       mounted = false;
     };
-  }, [token, user]);
+  }, [token, user, searchParams]);
 
   // ---------------------------------------------------------
   // SOCKET CONNECTION
@@ -108,7 +111,7 @@ export default function Chat() {
         : String(message.receiver);
 
       const currentConversationUserId = String(currentUser._id);
-      const loggedInUserId = String(user._id);
+      const loggedInUserId = String(user.id || user._id);
 
       const belongsToCurrentConversation =
         (senderId === currentConversationUserId &&
@@ -171,7 +174,7 @@ export default function Chat() {
     let mounted = true;
 
     const selectedUserId = String(selectedUser._id);
-    const loggedInUserId = String(user._id);
+    const loggedInUserId = String(user.id || user._id);
 
     const loadMessages = async () => {
       try {
@@ -533,7 +536,7 @@ export default function Chat() {
                           : String(message.sender);
 
                         const isMine =
-                          senderId === String(user._id);
+                          senderId === String(user.id || user._id);
 
                         const senderName =
                           message.sender?.name ||
