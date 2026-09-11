@@ -55,10 +55,12 @@ export default function BrowsePage() {
       selectedCategory === "All" ||
       article.category?.toLowerCase() === selectedCategory.toLowerCase();
 
-    const searchText = searchQuery.toLowerCase();
+    const searchText = searchQuery.trim().toLowerCase();
+    const authorName = article.author?.name?.toLowerCase() || "";
 
     const matchesSearch =
       article.title?.toLowerCase().includes(searchText) ||
+      authorName.includes(searchText) ||
       article.content?.toLowerCase().includes(searchText) ||
       article.tags?.some((tag) =>
         tag.toLowerCase().includes(searchText)
@@ -95,7 +97,7 @@ export default function BrowsePage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search articles..."
+                placeholder="Search by title, author, or tag..."
                 className="w-full pl-10 pr-4 py-2 rounded-full bg-white border border-stone-200 text-sm placeholder-stone-400 focus:outline-none focus:border-[#1B3B2B] shadow-sm"
               />
             </div>
