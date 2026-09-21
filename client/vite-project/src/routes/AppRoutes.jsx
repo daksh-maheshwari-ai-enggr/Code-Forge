@@ -15,6 +15,7 @@ import AuthorDashboard from "../pages/author/dashboard";
 import AdminDashboard from "../pages/admin/admin";
 import CreateArticle from "../pages/author/CreateArticle";
 import Notifications from "../pages/author/Notifications";
+import Reports from "../pages/admin/Reports";
 
 function AppRoutes() {
   return (
@@ -54,6 +55,7 @@ function AppRoutes() {
 
         <Route path="/author/write" element={<CreateArticle />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/admin/reports" element={<Reports />} />
 
       </Routes>
     </BrowserRouter>
