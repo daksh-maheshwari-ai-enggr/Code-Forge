@@ -16,6 +16,8 @@ import AdminDashboard from "../pages/admin/admin";
 import CreateArticle from "../pages/author/CreateArticle";
 import Notifications from "../pages/author/Notifications";
 import Reports from "../pages/admin/Reports";
+import ReportDetails from "../pages/admin/ReportDetails";
+import AppealDetails from "../pages/admin/AppealDetails";
 
 function AppRoutes() {
   return (
@@ -57,6 +59,14 @@ function AppRoutes() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/admin/reports" element={<Reports />} />
 
+        <Route
+          path="/admin/reports/:reportId"
+          element={<ReportDetails />}
+        />
+        <Route
+          path="/admin/reports/:reportId/appeal"
+          element={<AppealDetails />}
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -41,8 +41,71 @@ const getCurrentUser = async (token) => {
   });
 };
 
+const getAllReports = async (token) => {
+  return request("/reports", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const getReportById = async (reportId, token) => {
+  return request(`/reports/${reportId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const updateReportAction = async (reportId, adminAction, token) => {
+  return request(`/reports/${reportId}/action`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      adminAction,
+    }),
+  });
+};
+
+const getAppealByReport = async (reportId, token) => {
+  return request(`/reports/${reportId}/appeal`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+const updateAppealDecision = async (
+  appealId,
+  status,
+  adminNote,
+  token
+) => {
+  return request(`/appeals/${appealId}/decision`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      status,
+      adminNote,
+    }),
+  });
+};
+
 export {
   registerUser,
   loginUser,
   getCurrentUser,
+  updateReportAction,
+  getAllReports,
+  getReportById,
+  getAppealByReport,
+  updateAppealDecision
 };
+ 
