@@ -166,6 +166,43 @@ const createArticleQuiz = async (articleId, quizData, token) => {
   return response.data;
 };
 
+const getModerationQueue = async (token) => {
+  return request("/moderation", {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
+const getModerationRecord = async (id, token) => {
+  return request(`/moderation/${id}`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
+const reviewModerationRecord = async (id, finalDecision, token, notes = "") => {
+  return request(`/moderation/${id}/review`, {
+    method: "PATCH",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ finalDecision, notes })
+  });
+};
+
+const scanArticle = async (articleId, token) => {
+  return request(`/moderation/scan`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ articleId })
+  });
+};
+
+const getAuditLogs = async (token) => {
+  return request("/audit", {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
 export {
   api,
   registerUser,
@@ -189,4 +226,9 @@ export {
   markNotificationsRead,
   markNotificationRead,
   createArticleQuiz,
+  getModerationQueue,
+  getModerationRecord,
+  reviewModerationRecord,
+  scanArticle,
+  getAuditLogs,
 };

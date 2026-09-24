@@ -15,6 +15,8 @@ import notificationRoutes from "./src/routes/notification.routes.js";
 import quizRoutes from "./src/routes/quiz.routes.js";
 import chatRoutes from "./src/routes/chat.routes.js";
 import userRoutes from "./src/routes/user.routes.js";
+import moderationRoutes from "./src/routes/moderation.routes.js";
+import auditRoutes from "./src/routes/audit.routes.js";
 
 import registerChatSocket from "./src/socket/chat.socket.js";
 
@@ -49,6 +51,8 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api", quizRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/moderation", moderationRoutes);
+app.use("/api/audit", auditRoutes);
 
 // Register WebSocket chat events.
 registerChatSocket(io);

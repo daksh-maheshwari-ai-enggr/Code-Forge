@@ -25,6 +25,10 @@ import QuizResultPage from "../pages/reader/QuizResultPage";
 import Notifications from "../pages/Notifications";
 import PublicProfile from "../pages/PublicProfile";
 
+import ModerationQueue from "../pages/admin/ModerationQueue";
+import ModerationDetail from "../pages/admin/ModerationDetail";
+import AuditLog from "../pages/admin/AuditLog";
+
 function AppRoutes() {
   return (
     <BrowserRouter>
@@ -99,6 +103,30 @@ function AppRoutes() {
             <ProtectedRoute>
               <Notifications />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/moderation"
+          element={
+            <RoleRoute allowedRoles={["ADMIN"]}>
+              <ModerationQueue />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/admin/moderation/:id"
+          element={
+            <RoleRoute allowedRoles={["ADMIN"]}>
+              <ModerationDetail />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="/admin/audit"
+          element={
+            <RoleRoute allowedRoles={["ADMIN"]}>
+              <AuditLog />
+            </RoleRoute>
           }
         />
       </Routes>

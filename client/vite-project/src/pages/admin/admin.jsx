@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FiBookOpen,
   FiCheck,
@@ -106,12 +107,22 @@ function AdminDashboard() {
 
       <div className="min-h-screen bg-[#f3efe8] px-5 pb-16 pt-3 text-[#1f2a25]">
         <div className="mx-auto max-w-7xl">
-          <h1 className="mt-8 font-serif text-5xl font-black tracking-[-0.05em] text-[#1d201d]">
-            Admin Dashboard
-          </h1>
-          <p className="mt-3 text-[1.1rem] text-[#5a534a]">
-            Review and moderate article submissions.
-          </p>
+          <div className="mt-8 flex items-center justify-between">
+            <div>
+              <h1 className="font-serif text-5xl font-black tracking-[-0.05em] text-[#1d201d]">
+                Admin Dashboard
+              </h1>
+              <p className="mt-3 text-[1.1rem] text-[#5a534a]">
+                Review and moderate article submissions.
+              </p>
+            </div>
+            <Link
+              to="/admin/moderation"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#1d4b39] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#163e2f]"
+            >
+              Go to AI Moderation Queue &rarr;
+            </Link>
+          </div>
 
           <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {[
