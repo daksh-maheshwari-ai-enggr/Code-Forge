@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
@@ -39,11 +39,29 @@ const userSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+
+    isRestricted: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+
+    restrictionReason: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    restrictedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const User = mongoose.model("User", userSchema);
+
 export default User;
